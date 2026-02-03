@@ -1,0 +1,1114 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>House of Party — Target Launch Influencer Dashboard</title>
+<link href="https://fonts.googleapis.com/css2?family=DM+Sans:ital,opsz,wght@0,9..40,300;0,9..40,500;0,9..40,700;1,9..40,400&family=Instrument+Serif:ital@0;1&display=swap" rel="stylesheet">
+<style>
+:root {
+  --bg: #0D0D0D;
+  --surface: #161616;
+  --surface-2: #1E1E1E;
+  --surface-3: #262626;
+  --border: #2A2A2A;
+  --text: #F0EDED;
+  --text-dim: #8A8A8A;
+  --accent: #FF3D3D;
+  --accent-glow: rgba(255, 61, 61, 0.15);
+  --green: #2DD881;
+  --green-dim: rgba(45, 216, 129, 0.12);
+  --amber: #FFB020;
+  --amber-dim: rgba(255, 176, 32, 0.12);
+  --red-dim: rgba(255, 61, 61, 0.10);
+  --blue: #4D9EFF;
+  --blue-dim: rgba(77, 158, 255, 0.12);
+  --radius: 10px;
+  --radius-lg: 16px;
+}
+
+* { margin: 0; padding: 0; box-sizing: border-box; }
+
+body {
+  background: var(--bg);
+  color: var(--text);
+  font-family: 'DM Sans', sans-serif;
+  font-size: 14px;
+  line-height: 1.55;
+  -webkit-font-smoothing: antialiased;
+}
+
+.app { max-width: 1400px; margin: 0 auto; padding: 32px 24px 80px; }
+
+/* Header */
+.header {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  margin-bottom: 40px;
+  padding-bottom: 32px;
+  border-bottom: 1px solid var(--border);
+}
+.header-left h1 {
+  font-family: 'Instrument Serif', serif;
+  font-size: 36px;
+  font-weight: 400;
+  letter-spacing: -0.5px;
+  margin-bottom: 4px;
+}
+.header-left h1 span { color: var(--accent); }
+.header-left p { color: var(--text-dim); font-size: 14px; }
+.header-right {
+  display: flex;
+  gap: 12px;
+  align-items: center;
+}
+.stat-pill {
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: 40px;
+  padding: 8px 18px;
+  font-size: 13px;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+.stat-pill .dot {
+  width: 8px; height: 8px;
+  border-radius: 50%;
+  display: inline-block;
+}
+.stat-pill .dot.green { background: var(--green); }
+.stat-pill .dot.amber { background: var(--amber); }
+.stat-pill .dot.red { background: var(--accent); }
+
+/* Tabs */
+.tabs {
+  display: flex;
+  gap: 4px;
+  margin-bottom: 28px;
+  background: var(--surface);
+  border-radius: 10px;
+  padding: 4px;
+  width: fit-content;
+}
+.tab {
+  padding: 8px 20px;
+  border-radius: 8px;
+  cursor: pointer;
+  font-size: 13px;
+  font-weight: 500;
+  color: var(--text-dim);
+  transition: all 0.2s;
+  border: none;
+  background: none;
+  font-family: inherit;
+}
+.tab:hover { color: var(--text); }
+.tab.active {
+  background: var(--surface-3);
+  color: var(--text);
+}
+
+/* Tab Panels */
+.panel { display: none; }
+.panel.active { display: block; }
+
+/* Card Grid */
+.card-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(380px, 1fr));
+  gap: 16px;
+}
+
+/* Influencer Card */
+.card {
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-lg);
+  padding: 20px;
+  position: relative;
+  transition: border-color 0.25s, transform 0.2s;
+}
+.card:hover {
+  border-color: #3A3A3A;
+  transform: translateY(-2px);
+}
+.card.recommended { border-color: rgba(45, 216, 129, 0.35); }
+.card.maybe { border-color: rgba(255, 176, 32, 0.25); }
+.card.skip { opacity: 0.5; }
+
+.card-badge {
+  position: absolute;
+  top: 14px;
+  right: 14px;
+  font-size: 11px;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.8px;
+  padding: 4px 10px;
+  border-radius: 6px;
+}
+.card-badge.rec { background: var(--green-dim); color: var(--green); }
+.card-badge.maybe { background: var(--amber-dim); color: var(--amber); }
+.card-badge.skip { background: var(--red-dim); color: var(--accent); }
+
+.card-handle {
+  font-family: 'Instrument Serif', serif;
+  font-size: 22px;
+  margin-bottom: 2px;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+.card-handle .platform {
+  font-family: 'DM Sans', sans-serif;
+  font-size: 10px;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 1px;
+  padding: 2px 7px;
+  border-radius: 4px;
+  background: var(--surface-3);
+  color: var(--text-dim);
+}
+
+.card-meta {
+  display: flex;
+  gap: 16px;
+  margin: 10px 0 14px;
+  font-size: 12px;
+  color: var(--text-dim);
+}
+.card-meta span { display: flex; align-items: center; gap: 4px; }
+.card-meta .followers { color: var(--blue); font-weight: 500; }
+
+.card-price {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin-bottom: 12px;
+}
+.card-price .ask {
+  font-size: 13px;
+  color: var(--text-dim);
+  text-decoration: line-through;
+}
+.card-price .suggested {
+  font-size: 18px;
+  font-weight: 700;
+  color: var(--green);
+}
+.card-price .label {
+  font-size: 11px;
+  color: var(--text-dim);
+}
+
+.score-bar {
+  display: flex;
+  gap: 4px;
+  margin-bottom: 14px;
+}
+.score-segment {
+  height: 4px;
+  border-radius: 2px;
+  flex: 1;
+}
+.score-segment.filled { background: var(--green); }
+.score-segment.empty { background: var(--surface-3); }
+
+.card-rationale {
+  font-size: 12.5px;
+  color: var(--text-dim);
+  line-height: 1.6;
+  padding-top: 12px;
+  border-top: 1px solid var(--border);
+}
+
+/* Content Script Cards */
+.script-card {
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-lg);
+  padding: 24px;
+  margin-bottom: 16px;
+}
+.script-card h3 {
+  font-family: 'Instrument Serif', serif;
+  font-size: 22px;
+  font-weight: 400;
+  margin-bottom: 4px;
+}
+.script-card .type-badge {
+  display: inline-block;
+  font-size: 11px;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.8px;
+  padding: 3px 10px;
+  border-radius: 5px;
+  background: var(--blue-dim);
+  color: var(--blue);
+  margin-bottom: 14px;
+}
+.script-card .script-body {
+  background: var(--surface-2);
+  border-radius: var(--radius);
+  padding: 18px;
+  margin-top: 12px;
+  font-size: 13px;
+  line-height: 1.75;
+  color: var(--text);
+  white-space: pre-wrap;
+}
+.script-card .script-body .stage {
+  color: var(--accent);
+  font-weight: 700;
+  font-size: 11px;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  display: block;
+  margin-top: 12px;
+  margin-bottom: 4px;
+}
+.script-card .script-body .stage:first-child { margin-top: 0; }
+
+.script-card .hashtags {
+  margin-top: 12px;
+  font-size: 12px;
+  color: var(--blue);
+}
+.script-card .deliverables {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+  margin-top: 12px;
+}
+.script-card .deliverables span {
+  background: var(--surface-3);
+  padding: 4px 10px;
+  border-radius: 6px;
+  font-size: 11px;
+  color: var(--text-dim);
+}
+
+/* Contract Section */
+.contract-container {
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-lg);
+  padding: 32px;
+}
+.contract-container h2 {
+  font-family: 'Instrument Serif', serif;
+  font-size: 28px;
+  font-weight: 400;
+  margin-bottom: 6px;
+}
+.contract-container .subtitle {
+  color: var(--text-dim);
+  font-size: 13px;
+  margin-bottom: 24px;
+}
+.contract-body {
+  font-size: 13px;
+  line-height: 1.85;
+  color: #D0D0D0;
+  white-space: pre-wrap;
+}
+.contract-body .clause-title {
+  font-weight: 700;
+  color: var(--text);
+  font-size: 14px;
+  margin-top: 20px;
+  display: block;
+}
+.contract-body .clause-title:first-child { margin-top: 0; }
+.contract-body .fill {
+  color: var(--accent);
+  font-style: italic;
+  background: var(--red-dim);
+  padding: 1px 6px;
+  border-radius: 3px;
+}
+
+/* Summary Table */
+.summary-table {
+  width: 100%;
+  border-collapse: collapse;
+  margin-top: 16px;
+}
+.summary-table th {
+  text-align: left;
+  font-size: 11px;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.8px;
+  color: var(--text-dim);
+  padding: 10px 12px;
+  border-bottom: 1px solid var(--border);
+}
+.summary-table td {
+  padding: 12px;
+  font-size: 13px;
+  border-bottom: 1px solid var(--border);
+  vertical-align: top;
+}
+.summary-table tr:last-child td { border-bottom: none; }
+.summary-table .handle-col { font-weight: 500; }
+.summary-table .rate-col { color: var(--green); font-weight: 600; }
+.summary-table .verdict-col .v-rec { color: var(--green); font-weight: 600; }
+.summary-table .verdict-col .v-maybe { color: var(--amber); font-weight: 600; }
+.summary-table .verdict-col .v-skip { color: var(--accent); font-weight: 600; }
+
+.total-row td {
+  padding-top: 16px;
+  font-weight: 700;
+  font-size: 15px;
+  border-top: 2px solid var(--border);
+}
+.total-row .rate-col { color: var(--green); font-size: 18px; }
+
+/* Copy button */
+.copy-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  background: var(--surface-3);
+  border: 1px solid var(--border);
+  color: var(--text);
+  padding: 8px 16px;
+  border-radius: 8px;
+  font-size: 12px;
+  font-weight: 500;
+  cursor: pointer;
+  font-family: inherit;
+  margin-top: 16px;
+  transition: background 0.2s;
+}
+.copy-btn:hover { background: #333; }
+.copy-btn.copied { background: var(--green-dim); color: var(--green); border-color: rgba(45,216,129,0.3); }
+
+@media (max-width: 860px) {
+  .card-grid { grid-template-columns: 1fr; }
+  .header { flex-direction: column; gap: 16px; }
+  .header-right { flex-wrap: wrap; }
+}
+</style>
+</head>
+<body>
+<div class="app">
+
+  <!-- Header -->
+  <div class="header">
+    <div class="header-left">
+      <h1>House of <span>Party</span> — Target Launch</h1>
+      <p>Influencer Selection Dashboard &nbsp;·&nbsp; Paper Party LLC &nbsp;·&nbsp; Nationwide Retail Campaign</p>
+    </div>
+    <div class="header-right">
+      <div class="stat-pill"><span class="dot green"></span> 7 Recommended</div>
+      <div class="stat-pill"><span class="dot amber"></span> 4 Maybe</div>
+      <div class="stat-pill"><span class="dot red"></span> 8 Skip</div>
+    </div>
+  </div>
+
+  <!-- Tabs -->
+  <div class="tabs">
+    <button class="tab active" onclick="showTab('scorecard')">Scorecard</button>
+    <button class="tab" onclick="showTab('scripts')">Content Scripts</button>
+    <button class="tab" onclick="showTab('contract')">Contract Template</button>
+    <button class="tab" onclick="showTab('summary')">Budget Summary</button>
+  </div>
+
+  <!-- TAB 1: SCORECARD -->
+  <div id="scorecard" class="panel active">
+    <div class="card-grid">
+
+      <!-- RECOMMENDED 1: @targetandme -->
+      <div class="card recommended">
+        <span class="card-badge rec">★ Recommend</span>
+        <div class="card-handle">@targetandme <span class="platform">IG</span></div>
+        <div class="card-meta">
+          <span class="followers">150K followers</span>
+          <span>ogtargetandme@gmail.com</span>
+        </div>
+        <div class="card-price">
+          <span class="ask">$3,500 (1 Reel)</span>
+          <span class="suggested">$3,000</span>
+          <span class="label">suggested rate (1 Reel + cross-post TikTok)</span>
+        </div>
+        <div class="score-bar"><div class="score-segment filled"></div><div class="score-segment filled"></div><div class="score-segment filled"></div><div class="score-segment filled"></div><div class="score-segment filled"></div></div>
+        <div class="card-rationale"><strong>Why:</strong> This is your #1 pick. Audience literally follows to find Target products — highest purchase intent of any creator on this list. 150K is the sweet spot between reach and engagement. Name alone is a CTA. Cross-post TikTok is only +$1,500 so negotiate both for $3K flat.</div>
+      </div>
+
+      <!-- RECOMMENDED 2: @target_deal_sisters -->
+      <div class="card recommended">
+        <span class="card-badge rec">★ Recommend</span>
+        <div class="card-handle">@target_deal_sisters <span class="platform">IG</span></div>
+        <div class="card-meta">
+          <span class="followers">83K followers</span>
+          <span>targetdealsisters@gmail.com</span>
+        </div>
+        <div class="card-price">
+          <span class="ask">$700 (1 Reel + Story)</span>
+          <span class="suggested">$700</span>
+          <span class="label">take as quoted — great value</span>
+        </div>
+        <div class="score-bar"><div class="score-segment filled"></div><div class="score-segment filled"></div><div class="score-segment filled"></div><div class="score-segment filled"></div><div class="score-segment filled"></div></div>
+        <div class="card-rationale"><strong>Why:</strong> $700 for 83K Target-dedicated followers is a steal. Their audience is there for one reason: Target deals. Linked story drives direct action. Best CPM on the entire list. Lock this immediately.</div>
+      </div>
+
+      <!-- RECOMMENDED 3: @probablyat_target -->
+      <div class="card recommended">
+        <span class="card-badge rec">★ Recommend</span>
+        <div class="card-handle">@probablyat_target <span class="platform">IG</span></div>
+        <div class="card-meta">
+          <span class="followers">70K followers</span>
+          <span>No email (DM on IG)</span>
+        </div>
+        <div class="card-price">
+          <span class="ask">$1,400 (shop-with-me + 3 stories)</span>
+          <span class="suggested">$1,200</span>
+          <span class="label">negotiate down slightly</span>
+        </div>
+        <div class="score-bar"><div class="score-segment filled"></div><div class="score-segment filled"></div><div class="score-segment filled"></div><div class="score-segment filled"></div><div class="score-segment empty"></div></div>
+        <div class="card-rationale"><strong>Why:</strong> Another Target-dedicated account. Shop-with-me format is the #1 content type for driving foot traffic. They expressed genuine enthusiasm ("huge fan, would LOVE to share") — that authenticity comes through on camera. Negotiate to $1,200.</div>
+      </div>
+
+      <!-- RECOMMENDED 4: @merryvibesonly -->
+      <div class="card recommended">
+        <span class="card-badge rec">★ Recommend</span>
+        <div class="card-handle">@merryvibesonly <span class="platform">TT + IG</span></div>
+        <div class="card-meta">
+          <span class="followers">TikTok 13K · IG 30K</span>
+          <span>merryvibesonlyllc@gmail.com</span>
+        </div>
+        <div class="card-price">
+          <span class="ask">$500 (1 video)</span>
+          <span class="suggested">$500</span>
+          <span class="label">take as quoted</span>
+        </div>
+        <div class="score-bar"><div class="score-segment filled"></div><div class="score-segment filled"></div><div class="score-segment filled"></div><div class="score-segment filled"></div><div class="score-segment empty"></div></div>
+        <div class="card-rationale"><strong>Why:</strong> She agreed to decorate her house using your kit — that's the exact "party transformation" content format that drives the highest purchase intent. $500 for authentic setup content is nano-influencer pricing for micro-level value. Cross-platform reach too.</div>
+      </div>
+
+      <!-- RECOMMENDED 5: @ariel_longa3 -->
+      <div class="card recommended">
+        <span class="card-badge rec">★ Recommend</span>
+        <div class="card-handle">@ariel_longa3 <span class="platform">TT</span></div>
+        <div class="card-meta">
+          <span class="followers">15K followers</span>
+          <span>longaariel8@gmail.com</span>
+        </div>
+        <div class="card-price">
+          <span class="ask">$750 (2 videos: in-store + home)</span>
+          <span class="suggested">$650</span>
+          <span class="label">suggest $650 for both</span>
+        </div>
+        <div class="score-bar"><div class="score-segment filled"></div><div class="score-segment filled"></div><div class="score-segment filled"></div><div class="score-segment filled"></div><div class="score-segment empty"></div></div>
+        <div class="card-rationale"><strong>Why:</strong> Two videos for under $750 covering both content formats you need: in-store Target discovery AND at-home party setup. That's both the shop-with-me and transformation content in one deal. Micro-influencer pricing, high authenticity.</div>
+      </div>
+
+      <!-- RECOMMENDED 6: @chelseehood -->
+      <div class="card recommended">
+        <span class="card-badge rec">★ Recommend</span>
+        <div class="card-handle">@chelseehood <span class="platform">IG</span></div>
+        <div class="card-meta">
+          <span class="followers">138K followers</span>
+          <span>chelsee@thehouseofhoodblog.com</span>
+        </div>
+        <div class="card-price">
+          <span class="ask">$3,000 (in-store $1,200 + party $1,800)</span>
+          <span class="suggested">$2,500</span>
+          <span class="label">negotiate bundle to $2,500</span>
+        </div>
+        <div class="score-bar"><div class="score-segment filled"></div><div class="score-segment filled"></div><div class="score-segment filled"></div><div class="score-segment filled"></div><div class="score-segment empty"></div></div>
+        <div class="card-rationale"><strong>Why:</strong> 138K is strong mid-tier reach. Two-video package covers both in-store and party setup — the exact formula. Home/lifestyle blog means her audience is the buyer demographic. Bundle both for $2,500.</div>
+      </div>
+
+      <!-- RECOMMENDED 7: @stylewithmechristamarie -->
+      <div class="card recommended">
+        <span class="card-badge rec">★ Recommend</span>
+        <div class="card-handle">@stylewithmechristamarie <span class="platform">IG</span></div>
+        <div class="card-meta">
+          <span class="followers">43K followers</span>
+          <span>No email (DM on IG)</span>
+        </div>
+        <div class="card-price">
+          <span class="ask">$150 (Reel + LTK + Stories + FB repost)</span>
+          <span class="suggested">$150</span>
+          <span class="label">take immediately</span>
+        </div>
+        <div class="score-bar"><div class="score-segment filled"></div><div class="score-segment filled"></div><div class="score-segment filled"></div><div class="score-segment filled"></div><div class="score-segment empty"></div></div>
+        <div class="card-rationale"><strong>Why:</strong> $150 for a Reel + Stories + LTK links + 26K Facebook repost is absurdly cheap. She's underpricing herself. Lock this in before she reconsiders. Even if engagement is average, the ROI is guaranteed at this price point.</div>
+      </div>
+
+      <!-- MAYBE 1: @boujeefindsofficial -->
+      <div class="card maybe">
+        <span class="card-badge maybe">Maybe</span>
+        <div class="card-handle">@boujeefindsofficial <span class="platform">IG</span></div>
+        <div class="card-meta">
+          <span class="followers">108K followers</span>
+          <span>boujeefindsofficial@gmail.com</span>
+        </div>
+        <div class="card-price">
+          <span class="ask">$2,000 (1 TikTok/IG video)</span>
+          <span class="suggested">$1,500</span>
+          <span class="label">only if negotiated down</span>
+        </div>
+        <div class="score-bar"><div class="score-segment filled"></div><div class="score-segment filled"></div><div class="score-segment filled"></div><div class="score-segment empty"></div><div class="score-segment empty"></div></div>
+        <div class="card-rationale"><strong>Why maybe:</strong> "Boujee finds" audience is shopping-oriented which is good. But $2K for one video at 108K is above benchmark. Only worth it at $1,500 or if they'll do 2 videos for $2K. Otherwise, your Target-specific accounts are better ROI.</div>
+      </div>
+
+      <!-- MAYBE 2: @lyndasedoud -->
+      <div class="card maybe">
+        <span class="card-badge maybe">Maybe</span>
+        <div class="card-handle">@lyndasedoud <span class="platform">TT</span></div>
+        <div class="card-meta">
+          <span class="followers">33K followers</span>
+          <span>lyndased.collabs@gmail.com</span>
+        </div>
+        <div class="card-price">
+          <span class="ask">Asking about budget</span>
+          <span class="suggested">$400</span>
+          <span class="label">offer $400 for unboxing + decor</span>
+        </div>
+        <div class="score-bar"><div class="score-segment filled"></div><div class="score-segment filled"></div><div class="score-segment filled"></div><div class="score-segment empty"></div><div class="score-segment empty"></div></div>
+        <div class="card-rationale"><strong>Why maybe:</strong> She agreed to unboxing and decoration video — right format. 33K TikTok is decent micro range. The fact she's asking about budget means she's flexible. Offer $400 for both videos. Good deal if she accepts.</div>
+      </div>
+
+      <!-- MAYBE 3: @katiedanek -->
+      <div class="card maybe">
+        <span class="card-badge maybe">Maybe</span>
+        <div class="card-handle">@katiedanek <span class="platform">TT</span></div>
+        <div class="card-meta">
+          <span class="followers">51K followers</span>
+          <span>danekkatie@gmail.com</span>
+        </div>
+        <div class="card-price">
+          <span class="ask">$500+ (1 TikTok)</span>
+          <span class="suggested">$500</span>
+          <span class="label">only if timeline works</span>
+        </div>
+        <div class="score-bar"><div class="score-segment filled"></div><div class="score-segment filled"></div><div class="score-segment filled"></div><div class="score-segment empty"></div><div class="score-segment empty"></div></div>
+        <div class="card-rationale"><strong>Why maybe:</strong> She used to make balloon videos with your products — that's organic brand affinity. But Mira flagged slow communication through agent and content has shifted to mom content. Price is fair at $500. Proceed only if she can hit your launch timeline and will make party content, not mom content.</div>
+      </div>
+
+      <!-- MAYBE 4: @targettakesmypaycheck -->
+      <div class="card maybe">
+        <span class="card-badge maybe">Maybe</span>
+        <div class="card-handle">@targettakesmypaycheck <span class="platform">IG</span></div>
+        <div class="card-meta">
+          <span class="followers">68K followers</span>
+          <span>targettakesmypaycheck@gmail.com</span>
+        </div>
+        <div class="card-price">
+          <span class="ask">No rate given</span>
+          <span class="suggested">$800</span>
+          <span class="label">offer $800 for post-Feb content</span>
+        </div>
+        <div class="score-bar"><div class="score-segment filled"></div><div class="score-segment filled"></div><div class="score-segment filled"></div><div class="score-segment empty"></div><div class="score-segment empty"></div></div>
+        <div class="card-rationale"><strong>Why maybe:</strong> Target-dedicated account with 68K is great, but not available in February. If your launch timeline extends past Feb, lock this one in. The handle alone is marketing gold. Offer $800 for a Reel + Stories.</div>
+      </div>
+
+      <!-- SKIP 1: @laurenmeadows_ -->
+      <div class="card skip">
+        <span class="card-badge skip">Skip</span>
+        <div class="card-handle">@laurenmeadows_ <span class="platform">TT</span></div>
+        <div class="card-meta">
+          <span class="followers">243K followers</span>
+          <span>hello@lauren-meadows.com</span>
+        </div>
+        <div class="card-price">
+          <span class="ask">$6K IG Reel / $7K TikTok</span>
+        </div>
+        <div class="score-bar"><div class="score-segment filled"></div><div class="score-segment empty"></div><div class="score-segment empty"></div><div class="score-segment empty"></div><div class="score-segment empty"></div></div>
+        <div class="card-rationale"><strong>Why skip:</strong> $7K for one TikTok video is wildly overpriced for 243K. Benchmark for this tier is $1,500–$3,000. You could book 5 micro-influencers for the same budget with better combined reach and engagement.</div>
+      </div>
+
+      <!-- SKIP 2: @ximenamsalinas -->
+      <div class="card skip">
+        <span class="card-badge skip">Skip</span>
+        <div class="card-handle">@ximenamsalinas <span class="platform">TT</span></div>
+        <div class="card-meta">
+          <span class="followers">20K followers</span>
+          <span>esmeralda@solylunamgmt.com</span>
+        </div>
+        <div class="card-price">
+          <span class="ask">$2,500 (1 TikTok)</span>
+        </div>
+        <div class="score-bar"><div class="score-segment filled"></div><div class="score-segment empty"></div><div class="score-segment empty"></div><div class="score-segment empty"></div><div class="score-segment empty"></div></div>
+        <div class="card-rationale"><strong>Why skip:</strong> $2,500 for 20K followers is 5–10× above market rate. Agency-repped creators at this follower count should be $100–$300. Hard pass.</div>
+      </div>
+
+      <!-- SKIP 3: @sheshortsweet -->
+      <div class="card skip">
+        <span class="card-badge skip">Skip</span>
+        <div class="card-handle">@sheshortsweet <span class="platform">TT</span></div>
+        <div class="card-meta">
+          <span class="followers">328K followers</span>
+          <span>juliapaige@linkcreatormgmt.com</span>
+        </div>
+        <div class="card-price">
+          <span class="ask">$8,500 TikTok / $12K syndicated</span>
+        </div>
+        <div class="score-bar"><div class="score-segment filled"></div><div class="score-segment empty"></div><div class="score-segment empty"></div><div class="score-segment empty"></div><div class="score-segment empty"></div></div>
+        <div class="card-rationale"><strong>Why skip:</strong> $8,500–$12,000 is celebrity-tier pricing for a 328K account. Even with "flexibility," this is 3–4× benchmark. That budget buys your entire recommended roster below. Not worth it for party supplies CPM.</div>
+      </div>
+
+      <!-- SKIP 4: @jordynsleek -->
+      <div class="card skip">
+        <span class="card-badge skip">Skip</span>
+        <div class="card-handle">@jordynsleek <span class="platform">TT</span></div>
+        <div class="card-meta">
+          <span class="followers">260K followers</span>
+          <span>madison.roy@thedigitaldept.com</span>
+        </div>
+        <div class="card-price">
+          <span class="ask">$5K TikTok / $4K IG Reel</span>
+        </div>
+        <div class="score-bar"><div class="score-segment filled"></div><div class="score-segment filled"></div><div class="score-segment empty"></div><div class="score-segment empty"></div><div class="score-segment empty"></div></div>
+        <div class="card-rationale"><strong>Why skip:</strong> Pricing is slightly above benchmark but not insane. Real issue: she can't make video until after February. If you need launch-timed content, she's out. If the campaign extends into March+, reconsider at $3,500.</div>
+      </div>
+
+      <!-- SKIP 5: @melissathompsonhome -->
+      <div class="card skip">
+        <span class="card-badge skip">Skip</span>
+        <div class="card-handle">@melissathompsonhome <span class="platform">IG</span></div>
+        <div class="card-meta">
+          <span class="followers">108K followers</span>
+          <span>melissathompson@famfluence.com</span>
+        </div>
+        <div class="card-price">
+          <span class="ask">$4K UGC / $7K IG Reels (2x each)</span>
+        </div>
+        <div class="score-bar"><div class="score-segment filled"></div><div class="score-segment empty"></div><div class="score-segment empty"></div><div class="score-segment empty"></div><div class="score-segment empty"></div></div>
+        <div class="card-rationale"><strong>Why skip:</strong> $11K total for 108K followers is way above benchmark. Even splitting it out, $3,500 per Reel for 108K is premium pricing. Home aesthetic may not align with party supplies. Budget better spent on Target-specific creators.</div>
+      </div>
+
+      <!-- SKIP 6: @convinoboard -->
+      <div class="card skip">
+        <span class="card-badge skip">Skip</span>
+        <div class="card-handle">@convinoboard <span class="platform">TT</span></div>
+        <div class="card-meta">
+          <span class="followers">212K followers</span>
+          <span>No email</span>
+        </div>
+        <div class="card-price">
+          <span class="ask">No rate given</span>
+        </div>
+        <div class="score-bar"><div class="score-segment filled"></div><div class="score-segment empty"></div><div class="score-segment empty"></div><div class="score-segment empty"></div><div class="score-segment empty"></div></div>
+        <div class="card-rationale"><strong>Why skip:</strong> No email, no pricing, no engagement from them. "Convino Board" suggests charcuterie/entertaining niche, not party supplies. Would need to cold-DM with no guarantee of relevance or pricing alignment.</div>
+      </div>
+
+      <!-- SKIP 7: @targetscallingme -->
+      <div class="card skip">
+        <span class="card-badge skip">Skip</span>
+        <div class="card-handle">@targetscallingme <span class="platform">IG</span></div>
+        <div class="card-meta">
+          <span class="followers">32K followers</span>
+          <span>targetscallingme@gmail.com</span>
+        </div>
+        <div class="card-price">
+          <span class="ask">No rate given</span>
+        </div>
+        <div class="score-bar"><div class="score-segment filled"></div><div class="score-segment filled"></div><div class="score-segment empty"></div><div class="score-segment empty"></div><div class="score-segment empty"></div></div>
+        <div class="card-rationale"><strong>Why skip:</strong> Target-dedicated handle is good, but 32K is small with no pricing info. If budget allows after locking top picks, revisit as a cheap add-on ($200–$400 range). Not a priority.</div>
+      </div>
+
+      <!-- SKIP 8: @homewithfey -->
+      <div class="card skip">
+        <span class="card-badge skip">Skip</span>
+        <div class="card-handle">@homewithfey <span class="platform">TT</span></div>
+        <div class="card-meta">
+          <span class="followers">10K followers</span>
+          <span>homewithfey@gmail.com</span>
+        </div>
+        <div class="card-price">
+          <span class="ask">No rate given</span>
+        </div>
+        <div class="score-bar"><div class="score-segment filled"></div><div class="score-segment empty"></div><div class="score-segment empty"></div><div class="score-segment empty"></div><div class="score-segment empty"></div></div>
+        <div class="card-rationale"><strong>Why skip:</strong> 10K is nano-tier. No pricing, no prior engagement. Home decor niche may not align with party supplies specifically. Too small to move the needle for a nationwide Target launch.</div>
+      </div>
+
+    </div>
+  </div>
+
+  <!-- TAB 2: CONTENT SCRIPTS -->
+  <div id="scripts" class="panel">
+
+    <!-- Script 1: Shop-With-Me -->
+    <div class="script-card">
+      <h3>Script A — "Target Run: Party Edition"</h3>
+      <div class="type-badge">Shop-With-Me · TikTok / IG Reel · 30-60 sec</div>
+      <p style="color:var(--text-dim);font-size:13px;margin-bottom:4px;">Best for: @targetandme · @target_deal_sisters · @probablyat_target · @ariel_longa3 (in-store video)</p>
+      <div class="deliverables">
+        <span>1× TikTok or IG Reel</span>
+        <span>3× IG Stories</span>
+        <span>#ad disclosure</span>
+        <span>Tag @houseofparty + @target</span>
+      </div>
+      <div class="script-body"><span class="stage">Hook (0-3 sec)</span>"Target really said 'party aisle glow-up' 🎯" — walk into the Target party section, camera on the aisle.
+
+<span class="stage">Discovery (3-15 sec)</span>Pan to House of Party products on shelf. Pick up 2-3 hero items. React genuinely — "wait, these are actually so cute."  Show price tags. Emphasize the quality-to-price ratio.
+
+<span class="stage">The Haul (15-35 sec)</span>Quick cuts: toss items in cart one by one. Show the range — balloons, banners, tableware. "I'm grabbing everything for [upcoming event]."
+
+<span class="stage">CTA (35-45 sec)</span>"House of Party just launched at Target nationwide — run, don't walk. Link in bio for store locator." Hold up final cart shot.
+
+<span class="stage">Stories (post after Reel)</span>Story 1: "Just found the cutest party supplies at Target 🎉" + product close-up
+Story 2: Shelf shot with location tag
+Story 3: "Available nationwide — check your local Target!" + swipe-up/link</div>
+      <div class="hashtags">#HouseOfParty #TargetFinds #TargetRun #PartySupplies #TargetHaul #NewAtTarget #ad</div>
+    </div>
+
+    <!-- Script 2: Party Transformation -->
+    <div class="script-card">
+      <h3>Script B — "Party Setup Transformation"</h3>
+      <div class="type-badge">Before/After Transformation · TikTok / IG Reel · 45-90 sec</div>
+      <p style="color:var(--text-dim);font-size:13px;margin-bottom:4px;">Best for: @merryvibesonly · @ariel_longa3 (home video) · @chelseehood (party setup) · @lyndasedoud</p>
+      <div class="deliverables">
+        <span>1× TikTok or IG Reel</span>
+        <span>3-5× IG Stories (BTS)</span>
+        <span>#ad disclosure</span>
+        <span>Tag @houseofparty</span>
+      </div>
+      <div class="script-body"><span class="stage">Hook (0-3 sec)</span>Show the empty room. "POV: You have 2 hours to turn this into a party." Trending audio underneath.
+
+<span class="stage">Unboxing (3-15 sec)</span>Lay out all House of Party items on the floor/table. Quick product shots — show brand name visible. "Everything from House of Party, got it all at Target."
+
+<span class="stage">Transformation Montage (15-50 sec)</span>Time-lapse setup. Balloons going up, banner hung, table set. Show each product being used in context. Mix close-ups with wide shots. Energy builds with music.
+
+<span class="stage">Reveal (50-70 sec)</span>Final wide shot of the fully decorated space. Slow pan. "All House of Party. All from Target. All under $[total]."
+
+<span class="stage">CTA (70-80 sec)</span>"Tag someone who needs this for their next party 👇 Available at Target nationwide."</div>
+      <div class="hashtags">#HouseOfParty #PartySetup #PartyDecor #TargetFinds #PartyTransformation #ad</div>
+    </div>
+
+    <!-- Script 3: Lifestyle/Mom -->
+    <div class="script-card">
+      <h3>Script C — "The Effortless Party Mom"</h3>
+      <div class="type-badge">Lifestyle Integration · IG Reel · 30-45 sec</div>
+      <p style="color:var(--text-dim);font-size:13px;margin-bottom:4px;">Best for: @stylewithmechristamarie · @boujeefindsofficial · @katiedanek</p>
+      <div class="deliverables">
+        <span>1× IG Reel</span>
+        <span>LTK / Storefront link</span>
+        <span>3× IG Stories</span>
+        <span>FB repost (if applicable)</span>
+      </div>
+      <div class="script-body"><span class="stage">Hook (0-3 sec)</span>"How I throw a Pinterest-worthy party without the Pinterest-level stress."
+
+<span class="stage">Problem (3-10 sec)</span>Quick relatable moment — planning chaos, scrolling party ideas, overwhelmed. "I used to spend hours on party decor…"
+
+<span class="stage">Solution (10-30 sec)</span>"Then I found House of Party at Target." Show products styled beautifully in home. Show how cohesive the collection is — everything matches, no mixing and matching from 5 different brands. Kid or family reacting to the setup.
+
+<span class="stage">CTA (30-40 sec)</span>"Available at Target now. I linked everything in my [LTK/storefront/bio]."</div>
+      <div class="hashtags">#HouseOfParty #TargetMom #PartyPlanning #TargetFinds #MomHack #ad</div>
+    </div>
+
+  </div>
+
+  <!-- TAB 3: CONTRACT -->
+  <div id="contract" class="panel">
+    <div class="contract-container">
+      <h2>Influencer Content Agreement</h2>
+      <p class="subtitle">Paper Party LLC — Standard Terms for House of Party Target Launch Campaign</p>
+      <div class="contract-body"><span class="clause-title">1. PARTIES</span>
+This Influencer Content Agreement ("Agreement") is entered into as of <span class="fill">[DATE]</span> by and between:
+
+<strong>Company:</strong> Paper Party LLC, a <span class="fill">[STATE]</span> limited liability company ("Brand")
+<strong>Influencer:</strong> <span class="fill">[INFLUENCER LEGAL NAME]</span>, operating under the social media handle(s) <span class="fill">[@ HANDLE(S)]</span> ("Creator")
+
+<span class="clause-title">2. CAMPAIGN OVERVIEW</span>
+Brand: House of Party (a brand of Paper Party LLC)
+Campaign: Nationwide Target Retail Launch
+Campaign Period: <span class="fill">[START DATE]</span> through <span class="fill">[END DATE]</span>
+
+<span class="clause-title">3. DELIVERABLES</span>
+Creator agrees to produce and publish the following content during the Campaign Period:
+
+Platform(s): <span class="fill">[TikTok / Instagram / Both]</span>
+Content Pieces:
+  — <span class="fill">[X]</span> TikTok Video(s) (minimum 30 seconds, vertical format)
+  — <span class="fill">[X]</span> Instagram Reel(s) (minimum 15 seconds)
+  — <span class="fill">[X]</span> Instagram Story Frame(s) with product tags/links
+  — <span class="fill">[Cross-posting: Yes/No — specify platform]</span>
+
+Content Requirements:
+  a. Clearly show House of Party products and packaging
+  b. Mention availability at Target stores nationwide
+  c. Show products on Target shelves or in a Target store (if in-store content)
+  d. Include @houseofparty and @target tags where platform allows
+  e. Use campaign hashtags: #HouseOfParty #TargetFinds #ad
+  f. Creator must respond to comments on posted content for a minimum of 48 hours
+
+<span class="clause-title">4. COMPENSATION</span>
+Total Fee: $<span class="fill">[AMOUNT]</span> USD
+
+Payment Schedule:
+  — 50% ($<span class="fill">[AMOUNT]</span>) upon execution of this Agreement
+  — 50% ($<span class="fill">[AMOUNT]</span>) within 5 business days of final content posting
+
+Payment Method: <span class="fill">[Wire / ACH / PayPal / Check]</span>
+
+Creator is responsible for all applicable taxes. Brand will issue a 1099-NEC for payments exceeding $600 in a calendar year.
+
+<span class="clause-title">5. CONTENT TIMELINE & APPROVAL</span>
+a. Brand will ship product to Creator by <span class="fill">[DATE]</span>
+b. Creator will submit draft content for review by <span class="fill">[DATE]</span>
+c. Brand will provide feedback within 48 business hours of draft receipt
+d. Creator is entitled to a maximum of two (2) revision rounds
+e. Final content must be approved before posting
+f. All content must be posted between <span class="fill">[POST START DATE]</span> and <span class="fill">[POST END DATE]</span>
+g. Content must remain live for a minimum of 12 months from posting date
+
+<span class="clause-title">6. CONTENT LICENSE & USAGE RIGHTS</span>
+Creator grants Brand a non-exclusive, worldwide, royalty-free license to:
+  a. Repost content on Brand's owned social media channels (Instagram, TikTok, Facebook, YouTube, Pinterest)
+  b. Feature content on Brand's website, email newsletters, and retail presentations
+  c. Use content for paid social media amplification (Spark Ads on TikTok, paid boosting on Instagram/Facebook) for a period of 90 days from posting date
+
+License Duration: 12 months from the date of posting
+Creator retains ownership of the original content.
+Any usage beyond the scope above requires separate written agreement and additional compensation.
+
+<span class="clause-title">7. EXCLUSIVITY</span>
+During the Campaign Period and for thirty (30) days following the final content post, Creator agrees not to create, publish, or promote sponsored content for the following competing product categories: party supplies, party decorations, balloons, banners, and tableware.
+
+This exclusivity does not prevent Creator from posting organic (non-sponsored) content featuring competing products in the normal course of their content creation.
+
+<span class="clause-title">8. FTC COMPLIANCE & DISCLOSURE</span>
+Creator agrees to comply with all applicable Federal Trade Commission (FTC) guidelines regarding sponsored content disclosure, including but not limited to:
+  a. Including #ad or #sponsored prominently at the beginning of all captions
+  b. Using platform-native paid partnership labels where available
+  c. Including verbal disclosure in video content ("This video is sponsored by House of Party")
+  d. Including disclosure on every Instagram Story frame
+
+Failure to include proper disclosure may result in Brand requesting content removal and/or withholding of final payment.
+
+<span class="clause-title">9. REPRESENTATIONS & WARRANTIES</span>
+Creator represents and warrants that:
+  a. Creator has the authority to enter into this Agreement
+  b. Content will be original work and will not infringe any third-party intellectual property rights
+  c. Creator will not use AI-generated imagery or likeness in deliverables
+  d. Creator will disclose if any content creation is outsourced to third parties
+  e. All statements about the product will be truthful and based on genuine experience
+  f. Creator is at least 18 years of age
+
+<span class="clause-title">10. TERMINATION</span>
+Either party may terminate this Agreement with 7 days' written notice if:
+  a. The other party materially breaches any term of this Agreement
+  b. Content is not delivered within the agreed timeline without prior written extension
+
+In the event of early termination:
+  — If Brand terminates without cause after product shipment, Creator retains 50% upfront payment
+  — If Creator fails to deliver content, Creator must refund all payments received within 14 days
+
+<span class="clause-title">11. CONFIDENTIALITY</span>
+Creator agrees to keep confidential the financial terms of this Agreement, Brand's unreleased product information, and any proprietary marketing strategy shared during the campaign. This obligation survives termination of this Agreement.
+
+<span class="clause-title">12. LIMITATION OF LIABILITY</span>
+Brand's total liability under this Agreement shall not exceed the total compensation amount specified in Section 4. Neither party shall be liable for indirect, incidental, or consequential damages.
+
+<span class="clause-title">13. GOVERNING LAW</span>
+This Agreement shall be governed by the laws of the State of <span class="fill">[STATE]</span>.
+
+<span class="clause-title">14. SIGNATURES</span>
+
+PAPER PARTY LLC
+By: ________________________________    Date: ____________
+Name: <span class="fill">[AUTHORIZED SIGNER]</span>
+Title: <span class="fill">[TITLE]</span>
+
+
+CREATOR
+By: ________________________________    Date: ____________
+Name: <span class="fill">[INFLUENCER LEGAL NAME]</span>
+Social Handle(s): <span class="fill">[@ HANDLE(S)]</span></div>
+
+      <button class="copy-btn" onclick="copyContract(this)">📋 Copy Contract Text</button>
+    </div>
+  </div>
+
+  <!-- TAB 4: BUDGET SUMMARY -->
+  <div id="summary" class="panel">
+    <h2 style="font-family:'Instrument Serif',serif;font-size:28px;font-weight:400;margin-bottom:6px;">Budget Summary — Recommended Roster</h2>
+    <p style="color:var(--text-dim);font-size:13px;margin-bottom:20px;">7 recommended influencers · Estimated combined reach: 529K+ followers · All Target-aligned</p>
+
+    <table class="summary-table">
+      <thead>
+        <tr>
+          <th>Handle</th>
+          <th>Platform</th>
+          <th>Followers</th>
+          <th>Deliverables</th>
+          <th>Suggested Rate</th>
+          <th>Verdict</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td class="handle-col">@targetandme</td>
+          <td>IG</td>
+          <td>150K</td>
+          <td>1 Reel + TikTok cross-post</td>
+          <td class="rate-col">$3,000</td>
+          <td class="verdict-col"><span class="v-rec">★ Recommend</span></td>
+        </tr>
+        <tr>
+          <td class="handle-col">@target_deal_sisters</td>
+          <td>IG</td>
+          <td>83K</td>
+          <td>1 Reel + linked Story</td>
+          <td class="rate-col">$700</td>
+          <td class="verdict-col"><span class="v-rec">★ Recommend</span></td>
+        </tr>
+        <tr>
+          <td class="handle-col">@probablyat_target</td>
+          <td>IG</td>
+          <td>70K</td>
+          <td>Shop-with-me + 3 Stories</td>
+          <td class="rate-col">$1,200</td>
+          <td class="verdict-col"><span class="v-rec">★ Recommend</span></td>
+        </tr>
+        <tr>
+          <td class="handle-col">@merryvibesonly</td>
+          <td>TT + IG</td>
+          <td>13K + 30K</td>
+          <td>1 party setup video</td>
+          <td class="rate-col">$500</td>
+          <td class="verdict-col"><span class="v-rec">★ Recommend</span></td>
+        </tr>
+        <tr>
+          <td class="handle-col">@ariel_longa3</td>
+          <td>TT</td>
+          <td>15K</td>
+          <td>In-store video + home setup</td>
+          <td class="rate-col">$650</td>
+          <td class="verdict-col"><span class="v-rec">★ Recommend</span></td>
+        </tr>
+        <tr>
+          <td class="handle-col">@chelseehood</td>
+          <td>IG</td>
+          <td>138K</td>
+          <td>In-store + party setup</td>
+          <td class="rate-col">$2,500</td>
+          <td class="verdict-col"><span class="v-rec">★ Recommend</span></td>
+        </tr>
+        <tr>
+          <td class="handle-col">@stylewithmechristamarie</td>
+          <td>IG + FB</td>
+          <td>43K + 26K FB</td>
+          <td>Reel + Stories + LTK + FB</td>
+          <td class="rate-col">$150</td>
+          <td class="verdict-col"><span class="v-rec">★ Recommend</span></td>
+        </tr>
+        <tr class="total-row">
+          <td colspan="4"><strong>Total Recommended Budget</strong></td>
+          <td class="rate-col">$8,700</td>
+          <td></td>
+        </tr>
+      </tbody>
+    </table>
+
+    <div style="margin-top:32px;">
+      <h3 style="font-family:'Instrument Serif',serif;font-size:22px;font-weight:400;margin-bottom:14px;">Optional Add-ons (Maybe List)</h3>
+      <table class="summary-table">
+        <thead>
+          <tr>
+            <th>Handle</th>
+            <th>Platform</th>
+            <th>Followers</th>
+            <th>Deliverables</th>
+            <th>Suggested Rate</th>
+            <th>Verdict</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td class="handle-col">@boujeefindsofficial</td>
+            <td>IG</td>
+            <td>108K</td>
+            <td>1 video (negotiate 2-for-1)</td>
+            <td class="rate-col">$1,500</td>
+            <td class="verdict-col"><span class="v-maybe">Maybe</span></td>
+          </tr>
+          <tr>
+            <td class="handle-col">@lyndasedoud</td>
+            <td>TT</td>
+            <td>33K</td>
+            <td>Unboxing + decor video</td>
+            <td class="rate-col">$400</td>
+            <td class="verdict-col"><span class="v-maybe">Maybe</span></td>
+          </tr>
+          <tr>
+            <td class="handle-col">@katiedanek</td>
+            <td>TT</td>
+            <td>51K</td>
+            <td>1 TikTok (if timeline works)</td>
+            <td class="rate-col">$500</td>
+            <td class="verdict-col"><span class="v-maybe">Maybe</span></td>
+          </tr>
+          <tr>
+            <td class="handle-col">@targettakesmypaycheck</td>
+            <td>IG</td>
+            <td>68K</td>
+            <td>Reel + Stories (post-Feb)</td>
+            <td class="rate-col">$800</td>
+            <td class="verdict-col"><span class="v-maybe">Maybe</span></td>
+          </tr>
+          <tr class="total-row">
+            <td colspan="4"><strong>Total If All Maybes Added</strong></td>
+            <td class="rate-col">$3,200</td>
+            <td></td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+
+    <div style="margin-top:32px;padding:24px;background:var(--surface);border:1px solid var(--border);border-radius:var(--radius-lg);">
+      <h3 style="font-family:'Instrument Serif',serif;font-size:22px;font-weight:400;margin-bottom:12px;">Budget Overview</h3>
+      <div style="display:grid;grid-template-columns:repeat(3,1fr);gap:20px;">
+        <div style="text-align:center;">
+          <div style="font-size:32px;font-weight:700;color:var(--green);">$8,700</div>
+          <div style="font-size:12px;color:var(--text-dim);margin-top:4px;">Core Roster (7 creators)</div>
+        </div>
+        <div style="text-align:center;">
+          <div style="font-size:32px;font-weight:700;color:var(--amber);">$11,900</div>
+          <div style="font-size:12px;color:var(--text-dim);margin-top:4px;">Max Budget (+ all Maybes)</div>
+        </div>
+        <div style="text-align:center;">
+          <div style="font-size:32px;font-weight:700;color:var(--blue);">529K+</div>
+          <div style="font-size:12px;color:var(--text-dim);margin-top:4px;">Combined Reach (core)</div>
+        </div>
+      </div>
+      <div style="margin-top:20px;padding-top:16px;border-top:1px solid var(--border);font-size:13px;color:var(--text-dim);line-height:1.7;">
+        <strong style="color:var(--text);">Key insight:</strong> Your recommended roster of 7 influencers costs less than a single post from @sheshortsweet or @laurenmeadows_ — while delivering 5× more content pieces across platforms with higher-intent, Target-dedicated audiences. The $8,700 core budget gets you 10+ content pieces, shop-with-me and party transformation formats, and coverage across both TikTok and Instagram.
+      </div>
+    </div>
+  </div>
+
+</div>
+
+<script>
+function showTab(id) {
+  document.querySelectorAll('.panel').forEach(p => p.classList.remove('active'));
+  document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
+  document.getElementById(id).classList.add('active');
+  event.target.classList.add('active');
+}
+
+function copyContract(btn) {
+  const text = document.querySelector('.contract-body').innerText;
+  navigator.clipboard.writeText(text).then(() => {
+    btn.classList.add('copied');
+    btn.innerHTML = '✓ Copied to clipboard';
+    setTimeout(() => {
+      btn.classList.remove('copied');
+      btn.innerHTML = '📋 Copy Contract Text';
+    }, 2500);
+  });
+}
+</script>
+</body>
+</html>

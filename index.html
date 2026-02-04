@@ -6,7 +6,7 @@
 <title>House of Party — Target Launch Influencer Dashboard</title>
 <link href="https://fonts.googleapis.com/css2?family=DM+Sans:ital,opsz,wght@0,9..40,300;0,9..40,500;0,9..40,700;1,9..40,400&family=Instrument+Serif:ital@0;1&display=swap" rel="stylesheet">
 <style>
-:root{--bg:#0D0D0D;--surface:#161616;--surface-2:#1E1E1E;--surface-3:#262626;--border:#2A2A2A;--text:#F0EDED;--text-dim:#8A8A8A;--accent:#FF3D3D;--green:#2DD881;--green-dim:rgba(45,216,129,0.12);--amber:#FFB020;--amber-dim:rgba(255,176,32,0.12);--red-dim:rgba(255,61,61,0.10);--blue:#4D9EFF;--blue-dim:rgba(77,158,255,0.12);--radius:10px;--radius-lg:16px}
+:root{--bg:#0D0D0D;--surface:#161616;--surface-2:#1E1E1E;--surface-3:#262626;--border:#2A2A2A;--text:#F0EDED;--text-dim:#8A8A8A;--accent:#FF3D3D;--green:#2DD881;--green-dim:rgba(45,216,129,0.12);--amber:#FFB020;--amber-dim:rgba(255,176,32,0.12);--red-dim:rgba(255,61,61,0.10);--blue:#4D9EFF;--blue-dim:rgba(77,158,255,0.12);--purple:#A855F7;--purple-dim:rgba(168,85,247,0.12);--radius:10px;--radius-lg:16px}
 *{margin:0;padding:0;box-sizing:border-box}
 body{background:var(--bg);color:var(--text);font-family:'DM Sans',sans-serif;font-size:14px;line-height:1.55;-webkit-font-smoothing:antialiased}
 .app{max-width:1400px;margin:0 auto;padding:32px 24px 80px}
@@ -40,10 +40,12 @@ body{background:var(--bg);color:var(--text);font-family:'DM Sans',sans-serif;fon
 .score-segment{height:4px;border-radius:2px;flex:1}
 .score-segment.filled{background:var(--green)}.score-segment.empty{background:var(--surface-3)}
 .card-rationale{font-size:12.5px;color:var(--text-dim);line-height:1.6;padding-top:12px;border-top:1px solid var(--border)}
-.card-actions{margin-top:14px;display:flex;gap:8px}
+.card-actions{margin-top:14px;display:flex;gap:8px;flex-wrap:wrap}
 .card-btn{padding:8px 16px;border-radius:8px;font-size:12px;font-weight:600;border:1px solid var(--border);cursor:pointer;font-family:inherit;transition:all 0.2s}
 .card-btn.contract{background:var(--green-dim);color:var(--green);border-color:rgba(45,216,129,0.3)}
 .card-btn.contract:hover{background:rgba(45,216,129,0.22)}
+.card-btn.docusign{background:var(--purple-dim);color:var(--purple);border-color:rgba(168,85,247,0.3)}
+.card-btn.docusign:hover{background:rgba(168,85,247,0.22)}
 .card-btn.script{background:var(--blue-dim);color:var(--blue);border-color:rgba(77,158,255,0.3)}
 .card-btn.script:hover{background:rgba(77,158,255,0.22)}
 .modal-overlay{display:none;position:fixed;top:0;left:0;right:0;bottom:0;background:rgba(0,0,0,0.8);z-index:1000;overflow-y:auto;padding:40px 20px;backdrop-filter:blur(4px)}
@@ -57,13 +59,22 @@ body{background:var(--bg);color:var(--text);font-family:'DM Sans',sans-serif;fon
 .ct{font-weight:700;color:var(--text);font-size:14px;margin-top:20px;display:block}
 .fill{color:var(--accent);font-style:italic}
 .val{color:var(--green);font-weight:600}
-.modal-actions{margin-top:20px;display:flex;gap:10px;flex-wrap:wrap}
-.copy-btn,.print-btn{display:inline-flex;align-items:center;gap:6px;padding:10px 20px;border-radius:8px;font-size:13px;font-weight:500;cursor:pointer;font-family:inherit;transition:all 0.2s}
+.modal-actions{margin-top:24px;display:flex;gap:10px;flex-wrap:wrap;padding-top:16px;border-top:1px solid var(--border)}
+.copy-btn,.print-btn,.ds-btn{display:inline-flex;align-items:center;gap:6px;padding:10px 20px;border-radius:8px;font-size:13px;font-weight:500;cursor:pointer;font-family:inherit;transition:all 0.2s}
 .copy-btn{background:var(--surface-3);border:1px solid var(--border);color:var(--text)}
 .copy-btn:hover{background:#333}
 .copy-btn.copied{background:var(--green-dim);color:var(--green);border-color:rgba(45,216,129,0.3)}
 .print-btn{background:var(--blue-dim);border:1px solid rgba(77,158,255,0.3);color:var(--blue)}
 .print-btn:hover{background:rgba(77,158,255,0.22)}
+.ds-btn{background:var(--purple-dim);border:1px solid rgba(168,85,247,0.3);color:var(--purple);font-weight:600}
+.ds-btn:hover{background:rgba(168,85,247,0.22)}
+.ds-btn svg{width:16px;height:16px}
+.ds-toast{position:fixed;bottom:24px;right:24px;background:var(--surface);border:1px solid rgba(168,85,247,0.4);border-radius:12px;padding:16px 24px;z-index:2000;display:none;align-items:center;gap:12px;box-shadow:0 8px 32px rgba(0,0,0,0.5);max-width:400px}
+.ds-toast.show{display:flex}
+.ds-toast .icon{font-size:24px}
+.ds-toast .msg{font-size:13px;line-height:1.5}
+.ds-toast .msg strong{color:var(--purple)}
+.ds-toast .close-toast{background:none;border:none;color:var(--text-dim);cursor:pointer;font-size:18px;padding:4px;margin-left:8px}
 .script-card{background:var(--surface);border:1px solid var(--border);border-radius:var(--radius-lg);padding:24px;margin-bottom:16px}
 .script-card h3{font-family:'Instrument Serif',serif;font-size:22px;font-weight:400;margin-bottom:4px}
 .type-badge{display:inline-block;font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:0.8px;padding:3px 10px;border-radius:5px;background:var(--blue-dim);color:var(--blue);margin-bottom:14px}
@@ -86,33 +97,43 @@ body{background:var(--bg);color:var(--text);font-family:'DM Sans',sans-serif;fon
 </head>
 <body>
 <div class="app">
-<div class="header"><div class="header-left"><h1>House of <span>Party</span> — Target Launch</h1><p>Influencer Selection Dashboard · Paper Party LLC · Nationwide Retail Campaign</p></div><div class="header-right"><div class="stat-pill"><span class="dot green"></span> 7 Recommended</div><div class="stat-pill"><span class="dot amber"></span> 4 Maybe</div><div class="stat-pill"><span class="dot red"></span> 8 Skip</div></div></div>
+<div class="header"><div class="header-left"><h1>House of <span>Party</span> — Target Launch</h1><p>Influencer Dashboard · Paper Party LLC · Valentine's Day Nationwide Retail Campaign · Feb 7–8, 2026</p></div><div class="header-right"><div class="stat-pill"><span class="dot green"></span> 7 Recommended</div><div class="stat-pill"><span class="dot amber"></span> 4 Maybe</div><div class="stat-pill"><span class="dot red"></span> 8 Skip</div></div></div>
 <div class="tabs"><button class="tab active" data-tab="scorecard">Scorecard</button><button class="tab" data-tab="scripts">Content Scripts</button><button class="tab" data-tab="summary">Budget Summary</button></div>
 
 <div id="scorecard" class="panel active"><div class="card-grid" id="card-container"></div></div>
 
 <div id="scripts" class="panel">
-<div class="script-card"><h3>Script A — "Target Run: Party Edition"</h3><div class="type-badge">Shop-With-Me · TikTok / IG Reel · 30-60 sec</div><p style="color:var(--text-dim);font-size:13px">Best for: @targetandme · @target_deal_sisters · @probablyat_target · @ariel_longa3</p><div class="deliverables"><span>1× TikTok or IG Reel</span><span>3× IG Stories</span><span>#ad disclosure</span><span>Tag @houseofparty + @target</span></div><div class="script-body"><span class="stage">Hook (0-3 sec)</span>"Target really said 'party aisle glow-up' 🎯" — walk into the Target party section, camera on the aisle.
-<span class="stage">Discovery (3-15 sec)</span>Pan to House of Party products on shelf. Pick up 2-3 hero items. React genuinely — "wait, these are actually so cute." Show price tags.
-<span class="stage">The Haul (15-35 sec)</span>Quick cuts: toss items in cart one by one. Show the range — balloons, banners, tableware. "I'm grabbing everything for [upcoming event]."
-<span class="stage">CTA (35-45 sec)</span>"House of Party just launched at Target nationwide — run, don't walk." Hold up final cart shot.
-<span class="stage">Stories (post after Reel)</span>Story 1: "Just found the cutest party supplies at Target 🎉" + product close-up
-Story 2: Shelf shot with location tag
-Story 3: "Available nationwide — check your local Target!" + swipe-up/link</div><div class="hashtags">#HouseOfParty #TargetFinds #TargetRun #PartySupplies #TargetHaul #NewAtTarget #ad</div></div>
-<div class="script-card"><h3>Script B — "Party Setup Transformation"</h3><div class="type-badge">Before/After · TikTok / IG Reel · 45-90 sec</div><p style="color:var(--text-dim);font-size:13px">Best for: @merryvibesonly · @ariel_longa3 (home) · @chelseehood · @lyndasedoud</p><div class="deliverables"><span>1× TikTok or IG Reel</span><span>3-5× IG Stories</span><span>#ad disclosure</span><span>Tag @houseofparty</span></div><div class="script-body"><span class="stage">Hook (0-3 sec)</span>Show the empty room. "POV: You have 2 hours to turn this into a party." Trending audio.
-<span class="stage">Unboxing (3-15 sec)</span>Lay out all House of Party items. Quick product shots — brand name visible. "Everything from House of Party, got it all at Target."
-<span class="stage">Transformation (15-50 sec)</span>Time-lapse setup. Balloons up, banner hung, table set. Mix close-ups with wide shots. Energy builds.
-<span class="stage">Reveal (50-70 sec)</span>Final wide shot of fully decorated space. Slow pan. "All House of Party. All from Target. All under $[total]."
-<span class="stage">CTA (70-80 sec)</span>"Tag someone who needs this for their next party 👇 Available at Target nationwide."</div><div class="hashtags">#HouseOfParty #PartySetup #PartyDecor #TargetFinds #PartyTransformation #ad</div></div>
-<div class="script-card"><h3>Script C — "The Effortless Party Mom"</h3><div class="type-badge">Lifestyle · IG Reel · 30-45 sec</div><p style="color:var(--text-dim);font-size:13px">Best for: @stylewithmechristamarie · @boujeefindsofficial · @katiedanek</p><div class="deliverables"><span>1× IG Reel</span><span>LTK / Storefront link</span><span>3× IG Stories</span><span>FB repost</span></div><div class="script-body"><span class="stage">Hook (0-3 sec)</span>"How I throw a Pinterest-worthy party without the Pinterest-level stress."
-<span class="stage">Problem (3-10 sec)</span>Quick relatable moment — planning chaos, scrolling party ideas, overwhelmed.
-<span class="stage">Solution (10-30 sec)</span>"Then I found House of Party at Target." Show products styled beautifully. Everything matches. Family reacting.
-<span class="stage">CTA (30-40 sec)</span>"Available at Target now. I linked everything in my [LTK/storefront/bio]."</div><div class="hashtags">#HouseOfParty #TargetMom #PartyPlanning #TargetFinds #MomHack #ad</div></div>
+<div class="script-card"><h3>Script A — "Target Run: Party Edition"</h3><div class="type-badge">Shop-With-Me · TikTok / IG Reel · 30-60 sec</div><p style="color:var(--text-dim);font-size:13px">Best for: @targetandme · @target_deal_sisters · @probablyat_target · @ariel_longa3</p><div class="deliverables"><span>1× TikTok or IG Reel</span><span>3× IG Stories</span><span>#ad disclosure</span><span>Tag @houseofparty.co + @target</span></div><div class="script-body"><span class="stage">Key Beats</span>Entry into the Target party aisle with a strong opening moment
+Discovery of House of Party products on shelf with genuine reaction
+Selection of multiple items to demonstrate range
+Clear callout of nationwide Target availability
+<span class="stage">Suggested Hook</span>"Target really said 'party aisle glow-up' 🎯" — walk into the Target party section, camera on the aisle.
+<span class="stage">Discovery</span>Pan to House of Party products on shelf. Pick up 2-3 hero items. React genuinely — "wait, these are actually so cute." Show price tags.
+<span class="stage">The Haul</span>Quick cuts: toss items in cart one by one. Show the range — balloons, banners, tableware. "I'm grabbing everything for Valentine's Day."
+<span class="stage">CTA</span>"House of Party just launched at Target nationwide — run, don't walk." Hold up final cart shot.</div><div class="hashtags">#HouseOfParty #TargetFinds #TargetRun #PartySupplies #TargetHaul #NewAtTarget #ad</div></div>
+
+<div class="script-card"><h3>Script B — "Party Setup Transformation"</h3><div class="type-badge">Before/After · TikTok / IG Reel · 45-90 sec</div><p style="color:var(--text-dim);font-size:13px">Best for: @merryvibesonly · @ariel_longa3 (home) · @chelseehood · @lyndasedoud</p><div class="deliverables"><span>1× TikTok or IG Reel</span><span>3-5× IG Stories</span><span>#ad disclosure</span><span>Tag @houseofparty.co</span></div><div class="script-body"><span class="stage">Key Beats</span>Empty or undecorated space
+Products laid out together with visible branding
+Setup process shown progressively
+Final decorated result with availability callout
+<span class="stage">Suggested Hook</span>"POV: You have 2 hours to turn this into a Valentine's Day party." Trending audio.
+<span class="stage">Unboxing</span>Lay out all House of Party items. Quick product shots — brand name visible. "Everything from House of Party, got it all at Target."
+<span class="stage">Transformation</span>Time-lapse setup. Balloons up, banner hung, table set. Mix close-ups with wide shots.
+<span class="stage">Reveal</span>Final wide shot. Slow pan. "All House of Party. All from Target."</div><div class="hashtags">#HouseOfParty #PartySetup #PartyDecor #TargetFinds #PartyTransformation #ad</div></div>
+
+<div class="script-card"><h3>Script C — "The Effortless Party Host"</h3><div class="type-badge">Lifestyle · IG Reel · 30-45 sec</div><p style="color:var(--text-dim);font-size:13px">Best for: @stylewithmechristamarie · @boujeefindsofficial · @katiedanek</p><div class="deliverables"><span>1× IG Reel</span><span>LTK / Storefront link</span><span>3× IG Stories</span><span>FB repost</span></div><div class="script-body"><span class="stage">Key Beats</span>Relatable planning challenge or moment of overwhelm
+Introduction of House of Party as the solution
+Products styled beautifully — everything coordinates
+Availability callout with shopping link
+<span class="stage">Suggested Hook</span>"How I throw a Pinterest-worthy party without the Pinterest-level stress."
+<span class="stage">Problem</span>Quick relatable moment — planning chaos, scrolling ideas, overwhelmed.
+<span class="stage">Solution</span>"Then I found House of Party at Target." Show products styled. Everything matches. Family reacting.
+<span class="stage">CTA</span>"Available at Target now. I linked everything in my [LTK/storefront/bio]."</div><div class="hashtags">#HouseOfParty #TargetMom #PartyPlanning #TargetFinds #MomHack #ad</div></div>
 </div>
 
 <div id="summary" class="panel">
 <h2 style="font-family:'Instrument Serif',serif;font-size:28px;font-weight:400;margin-bottom:6px">Budget Summary — Recommended Roster</h2>
-<p style="color:var(--text-dim);font-size:13px;margin-bottom:20px">7 recommended · Combined reach: 529K+ · All Target-aligned</p>
+<p style="color:var(--text-dim);font-size:13px;margin-bottom:20px">7 recommended · Combined reach: 529K+ · All Target-aligned · Posting: Feb 7–8, 2026</p>
 <table class="summary-table"><thead><tr><th>Handle</th><th>Platform</th><th>Followers</th><th>Deliverables</th><th>Rate</th><th>Verdict</th></tr></thead><tbody>
 <tr><td class="handle-col">@targetandme</td><td>IG</td><td>150K</td><td>1 Reel + TikTok cross-post</td><td class="rate-col">$3,000</td><td><span class="v-rec">★ Recommend</span></td></tr>
 <tr><td class="handle-col">@target_deal_sisters</td><td>IG</td><td>83K</td><td>1 Reel + linked Story</td><td class="rate-col">$700</td><td><span class="v-rec">★ Recommend</span></td></tr>
@@ -140,30 +161,44 @@ Story 3: "Available nationwide — check your local Target!" + swipe-up/link</di
 </div>
 </div>
 
-<div id="modal-overlay" class="modal-overlay"><div class="modal"><button class="modal-close" onclick="closeContract()">✕</button><h2 id="modal-title"></h2><p class="subtitle">Paper Party LLC — House of Party Target Launch Campaign</p><div class="contract-body" id="modal-body"></div><div class="modal-actions"><button class="copy-btn" onclick="copyContract(this)">📋 Copy Contract Text</button><button class="print-btn" onclick="window.print()">🖨️ Print / Save PDF</button></div></div></div>
+<div id="modal-overlay" class="modal-overlay"><div class="modal"><button class="modal-close" onclick="closeContract()">✕</button><h2 id="modal-title"></h2><p class="subtitle">Paper Party LLC — House of Party · Valentine's Day Target Launch</p><div class="contract-body" id="modal-body"></div><div class="modal-actions"><button class="copy-btn" onclick="copyContract(this)">📋 Copy Text</button><button class="print-btn" onclick="window.print()">🖨️ Print / PDF</button><button class="ds-btn" id="ds-send-btn" onclick="sendDocuSign()"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M22 2L11 13"/><path d="M22 2L15 22L11 13L2 9L22 2Z"/></svg> Send via DocuSign</button></div></div></div>
+
+<div class="ds-toast" id="ds-toast"><span class="icon">✉️</span><div class="msg" id="ds-toast-msg"></div><button class="close-toast" onclick="this.parentElement.classList.remove('show')">✕</button></div>
 
 <script>
-const influencers = [
-  {id:"targetandme",tier:"rec",handle:"@targetandme",platform:"IG",followers:"150K followers",email:"ogtargetandme@gmail.com",askPrice:"$3,500",suggestedPrice:"$3,000",priceLabel:"1 Reel + TikTok cross-post",score:5,rationale:'#1 pick. Audience follows to find Target products — highest purchase intent on this list. 150K is the sweet spot. Negotiate both platforms for $3K flat.',contract:{legalName:"[INFLUENCER LEGAL NAME]",platforms:"Instagram and TikTok",deliverables:"— 1× Instagram Reel (minimum 30 seconds, vertical format)\n  — 1× TikTok Video (cross-post or original, minimum 30 seconds)\n  — 3× Instagram Story Frames with product tags and location tag\n  — Content must show House of Party products on Target shelves\n  — Tag @houseofparty and @target in all posts\n  — Use campaign hashtags: #HouseOfParty #TargetFinds #ad",total:"3,000.00",upfront:"1,500.00",final:"1,500.00",script:"Script A — 'Target Run: Party Edition' (Shop-With-Me format)"}},
-  {id:"targetdealsisters",tier:"rec",handle:"@target_deal_sisters",platform:"IG",followers:"83K followers",email:"targetdealsisters@gmail.com",askPrice:"$700",suggestedPrice:"$700",priceLabel:"1 Reel + linked Story — take as quoted",score:5,rationale:'$700 for 83K Target-dedicated followers is a steal. Best CPM on the entire list. Lock this immediately.',contract:{legalName:"[INFLUENCER LEGAL NAME]",platforms:"Instagram",deliverables:"— 1× Instagram Reel (minimum 30 seconds, featuring House of Party products at Target)\n  — 1× Instagram Story Set (minimum 3 frames) with shopping links\n  — Content must show products on Target shelves with visible pricing\n  — Tag @houseofparty and @target in all posts\n  — Use campaign hashtags: #HouseOfParty #TargetFinds #ad",total:"700.00",upfront:"350.00",final:"350.00",script:"Script A — 'Target Run: Party Edition' (Shop-With-Me format)"}},
-  {id:"probablyattarget",tier:"rec",handle:"@probablyat_target",platform:"IG",followers:"70K followers",email:"DM on Instagram",askPrice:"$1,400",suggestedPrice:"$1,200",priceLabel:"shop-with-me + 3 Stories",score:4,rationale:'Target-dedicated account. Shop-with-me format is #1 for driving foot traffic. Expressed genuine enthusiasm. Negotiate to $1,200.',contract:{legalName:"[INFLUENCER LEGAL NAME]",platforms:"Instagram",deliverables:"— 1× Instagram Reel: \"Shop-With-Me\" format (minimum 45 seconds, filmed in-store at Target)\n  — 3× Instagram Story Frames with product tags, location tag, and shopping links\n  — Content must show the in-store shopping experience discovering House of Party products\n  — Tag @houseofparty and @target in all posts\n  — Use campaign hashtags: #HouseOfParty #TargetFinds #TargetRun #ad",total:"1,200.00",upfront:"600.00",final:"600.00",script:"Script A — 'Target Run: Party Edition' (Shop-With-Me format)"}},
-  {id:"merryvibesonly",tier:"rec",handle:"@merryvibesonly",platform:"TT + IG",followers:"TikTok 13K · IG 30K",email:"merryvibesonlyllc@gmail.com",askPrice:"$500",suggestedPrice:"$500",priceLabel:"1 party setup video — take as quoted",score:4,rationale:'Agreed to decorate her house using your kit — exact "party transformation" format. $500 for authentic setup content is nano pricing for micro value.',contract:{legalName:"[INFLUENCER LEGAL NAME / Merry Vibes Only LLC]",platforms:"TikTok and/or Instagram",deliverables:"— 1× Video (TikTok or Instagram Reel, minimum 45 seconds): Party setup/decoration transformation using House of Party products\n  — Content must show full unboxing of products with visible branding\n  — Must include before/after transformation of decorated space\n  — Mention availability at Target stores nationwide\n  — Tag @houseofparty in all posts\n  — Use campaign hashtags: #HouseOfParty #PartySetup #TargetFinds #ad",total:"500.00",upfront:"250.00",final:"250.00",script:"Script B — 'Party Setup Transformation' (Before/After format)"}},
-  {id:"ariellonga",tier:"rec",handle:"@ariel_longa3",platform:"TT",followers:"15K followers",email:"longaariel8@gmail.com",askPrice:"$750",suggestedPrice:"$650",priceLabel:"2 videos: in-store + home setup",score:4,rationale:'Two videos under $750 covering both formats: in-store Target discovery AND at-home party setup. Both content types in one deal.',contract:{legalName:"[INFLUENCER LEGAL NAME]",platforms:"TikTok",deliverables:"— 1× TikTok Video: In-store Target shopping video (minimum 30 seconds)\n    • Must show House of Party products on Target shelves\n    • Show discovery moment and product selection\n  — 1× TikTok Video: At-home party setup/decoration video (minimum 45 seconds)\n    • Must show unboxing and styling of House of Party products\n    • Include before/after transformation\n  — Both videos must mention availability at Target\n  — Tag @houseofparty in all posts\n  — Use campaign hashtags: #HouseOfParty #TargetFinds #ad",total:"650.00",upfront:"325.00",final:"325.00",script:"Script A (in-store) + Script B (home setup)"}},
-  {id:"chelseehood",tier:"rec",handle:"@chelseehood",platform:"IG",followers:"138K followers",email:"chelsee@thehouseofhoodblog.com",askPrice:"$3,000",suggestedPrice:"$2,500",priceLabel:"in-store video + party setup video",score:4,rationale:'138K strong mid-tier. Two-video package covers in-store and party setup. Home/lifestyle audience is the buyer demographic. Bundle both for $2,500.',contract:{legalName:"[INFLUENCER LEGAL NAME]",platforms:"Instagram",deliverables:"— 1× Instagram Reel: In-store Target video (minimum 30 seconds)\n    • Must show House of Party products in the Target party aisle\n    • Show genuine discovery and product selection\n  — 1× Instagram Reel: Party setup/styling video (minimum 45 seconds)\n    • Must show full party decoration using House of Party products\n    • Include before/after transformation of the space\n  — 3× Instagram Story Frames per video (6 total) with product tags\n  — Tag @houseofparty and @target in all posts\n  — Use campaign hashtags: #HouseOfParty #TargetFinds #ad",total:"2,500.00",upfront:"1,250.00",final:"1,250.00",script:"Script A (in-store) + Script B (party setup)"}},
-  {id:"christamarie",tier:"rec",handle:"@stylewithmechristamarie",platform:"IG + FB",followers:"43K IG + 26K FB",email:"DM on Instagram",askPrice:"$150",suggestedPrice:"$150",priceLabel:"Reel + Stories + LTK + FB — take immediately",score:4,rationale:'$150 for a Reel + Stories + LTK + 26K Facebook repost is absurdly cheap. Lock this in before she reconsiders.',contract:{legalName:"[INFLUENCER LEGAL NAME]",platforms:"Instagram and Facebook",deliverables:"— 1× Instagram Reel (minimum 15 seconds) featuring House of Party products\n  — 3× Instagram Story Frames with LTK or Amazon Storefront links\n  — Product photos for each featured item\n  — 1× Facebook repost of Instagram Reel to Facebook page (26K followers)\n  — Content must mention availability at Target stores\n  — Tag @houseofparty in all posts\n  — Use campaign hashtags: #HouseOfParty #TargetFinds #ad",total:"150.00",upfront:"75.00",final:"75.00",script:"Script C — 'The Effortless Party Mom' (Lifestyle format)"}},
-  {id:"boujeefinds",tier:"maybe",handle:"@boujeefindsofficial",platform:"IG",followers:"108K followers",email:"boujeefindsofficial@gmail.com",askPrice:"$2,000",suggestedPrice:"$1,500",priceLabel:"only if negotiated down",score:3,rationale:'Shopping-oriented audience is good. $2K for one video at 108K is above benchmark. Only worth it at $1,500 or 2 videos for $2K.',contract:{legalName:"[INFLUENCER LEGAL NAME]",platforms:"Instagram",deliverables:"— 1× Instagram Reel or TikTok Video (minimum 30 seconds) featuring House of Party products\n  — Content must position products as a \"boujee find\" at Target\n  — Show products in-store or styled at home with visible branding\n  — Tag @houseofparty and @target in all posts\n  — Use campaign hashtags: #HouseOfParty #TargetFinds #ad\n\n  NOTE: If Creator agrees to 2 videos for total compensation, add:\n  — 1× additional video (in-store or at-home, creator's choice)",total:"1,500.00",upfront:"750.00",final:"750.00",script:"Script A or Script C — creator's choice"}},
-  {id:"lyndasedoud",tier:"maybe",handle:"@lyndasedoud",platform:"TT",followers:"33K followers",email:"lyndased.collabs@gmail.com",askPrice:"Flexible",suggestedPrice:"$400",priceLabel:"offer $400 for unboxing + decor",score:3,rationale:'Agreed to unboxing and decoration video — right format. Asking about budget means flexible. Offer $400.',contract:{legalName:"[INFLUENCER LEGAL NAME]",platforms:"TikTok",deliverables:"— 1× TikTok Video: Unboxing of House of Party products (minimum 30 seconds)\n    • Must show products with visible branding and genuine reactions\n  — 1× TikTok Video: Decoration/party setup video (minimum 45 seconds)\n    • Must show products being used to decorate a space\n    • Include before/after transformation\n  — Both videos must mention availability at Target\n  — Tag @houseofparty in all posts\n  — Use campaign hashtags: #HouseOfParty #TargetFinds #ad",total:"400.00",upfront:"200.00",final:"200.00",script:"Script B — 'Party Setup Transformation'"}},
-  {id:"katiedanek",tier:"maybe",handle:"@katiedanek",platform:"TT",followers:"51K followers",email:"danekkatie@gmail.com",askPrice:"$500+",suggestedPrice:"$500",priceLabel:"only if timeline works",score:3,rationale:'Used to make balloon videos with your products. Content shifted to mom content and communication is slow. Only proceed if she can hit timeline.',contract:{legalName:"[INFLUENCER LEGAL NAME]",platforms:"TikTok",deliverables:"— 1× TikTok Video (minimum 30 seconds) featuring House of Party products\n  — Content must focus on party supplies/balloons (NOT mom/parenting content)\n  — Must show products with visible branding\n  — Mention availability at Target stores nationwide\n  — Tag @houseofparty in all posts\n  — Use campaign hashtags: #HouseOfParty #TargetFinds #ad\n\n  NOTE: Content must be delivered within campaign timeline.",total:"500.00",upfront:"250.00",final:"250.00",script:"Script B or balloon-specific content"}},
-  {id:"targettakesmypaycheck",tier:"maybe",handle:"@targettakesmypaycheck",platform:"IG",followers:"68K followers",email:"targettakesmypaycheck@gmail.com",askPrice:"No rate",suggestedPrice:"$800",priceLabel:"offer $800 for post-Feb content",score:3,rationale:'Target-dedicated account, 68K. Not available in February. If launch extends past Feb, lock this one in.',contract:{legalName:"[INFLUENCER LEGAL NAME]",platforms:"Instagram",deliverables:"— 1× Instagram Reel (minimum 30 seconds) featuring House of Party products at Target\n  — 3× Instagram Story Frames with product tags and shopping links\n  — Content must show products on Target shelves or in-cart\n  — Tag @houseofparty and @target in all posts\n  — Use campaign hashtags: #HouseOfParty #TargetFinds #ad\n\n  NOTE: Creator available starting March 2025. Posting window adjusted accordingly.",total:"800.00",upfront:"400.00",final:"400.00",script:"Script A — 'Target Run: Party Edition'"}},
-  {id:"s1",tier:"skip",handle:"@laurenmeadows_",platform:"TT",followers:"243K",email:"hello@lauren-meadows.com",askPrice:"$6K IG / $7K TikTok",score:1,rationale:'$7K for one TikTok at 243K is wildly overpriced. Benchmark is $1,500–$3,000.'},
-  {id:"s2",tier:"skip",handle:"@ximenamsalinas",platform:"TT",followers:"20K",email:"esmeralda@solylunamgmt.com",askPrice:"$2,500 (1 TikTok)",score:1,rationale:'$2,500 for 20K followers is 5–10× above market rate. Hard pass.'},
-  {id:"s3",tier:"skip",handle:"@sheshortsweet",platform:"TT",followers:"328K",email:"juliapaige@linkcreatormgmt.com",askPrice:"$8,500–$12,000",score:1,rationale:'Celebrity pricing for 328K account. That budget buys your entire recommended roster.'},
-  {id:"s4",tier:"skip",handle:"@jordynsleek",platform:"TT",followers:"260K",email:"madison.roy@thedigitaldept.com",askPrice:"$5K TT / $4K IG",score:2,rationale:"Can't make video until after February. Above benchmark pricing."},
-  {id:"s5",tier:"skip",handle:"@melissathompsonhome",platform:"IG",followers:"108K",email:"melissathompson@famfluence.com",askPrice:"$4K UGC / $7K Reels",score:1,rationale:'$11K total for 108K is way above benchmark. Home aesthetic may not align with party supplies.'},
-  {id:"s6",tier:"skip",handle:"@convinoboard",platform:"TT",followers:"212K",email:"No email",score:1,rationale:'No email, no pricing, charcuterie niche — not party supplies aligned.'},
-  {id:"s7",tier:"skip",handle:"@targetscallingme",platform:"IG",followers:"32K",email:"targetscallingme@gmail.com",score:2,rationale:'32K with no pricing. Revisit as cheap add-on ($200–$400) after locking top picks.'},
-  {id:"s8",tier:"skip",handle:"@homewithfey",platform:"TT",followers:"10K",email:"homewithfey@gmail.com",score:1,rationale:'10K nano-tier. Too small for a nationwide Target launch.'}
+const PRODUCTS = [
+  "Vintage Valentines Party Hero All-in-One Kit",
+  "Sweet Bow Party Hero All-in-One Kit",
+  "Flower Bouquet Balloon Creation Kit",
+  "Wild Hearts Party Hero All-in-One Kit"
 ];
+const POSTING_WINDOW = "February 7 and February 8, 2026";
+const BRAND_HANDLE = "@houseofparty.co";
+const BRAND_HASHTAGS = "#HouseOfParty #TargetFinds #ad";
+
+const influencers = [
+  {id:"targetandme",tier:"rec",handle:"@targetandme",platform:"IG",followers:"150K followers",email:"ogtargetandme@gmail.com",askPrice:"$3,500",suggestedPrice:"$3,000",priceLabel:"1 Reel + TikTok cross-post",score:5,rationale:'#1 pick. Audience follows to find Target products — highest purchase intent. 150K sweet spot. Negotiate both platforms for $3K flat.',contract:{platforms:"Instagram and TikTok",script:"Script A — 'Target Run: Party Edition'",deliverables:`— 1× Instagram Reel (minimum 30 seconds, vertical format)\n  — 1× TikTok Video (cross-post or original, minimum 30 seconds)\n  — 3× Instagram Story Frames with product tags and location tag\n  — Content must show House of Party products on Target shelves\n  — Tag ${BRAND_HANDLE} and @target in all posts\n  — Use campaign hashtags: ${BRAND_HASHTAGS}\n  — All content created and posted between ${POSTING_WINDOW}`,total:"3,000.00",upfront:"1,500.00",final:"1,500.00"}},
+  {id:"targetdealsisters",tier:"rec",handle:"@target_deal_sisters",platform:"IG",followers:"83K followers",email:"targetdealsisters@gmail.com",askPrice:"$700",suggestedPrice:"$700",priceLabel:"1 Reel + linked Story — take as quoted",score:5,rationale:'$700 for 83K Target-dedicated followers is a steal. Best CPM on the list. Lock immediately.',contract:{platforms:"Instagram",script:"Script A — 'Target Run: Party Edition'",deliverables:`— 1× Instagram Reel (minimum 30 seconds, featuring House of Party products at Target)\n  — 1× Instagram Story Set (minimum 3 frames) with shopping links\n  — Content must show products on Target shelves with visible pricing\n  — Tag ${BRAND_HANDLE} and @target in all posts\n  — Use campaign hashtags: ${BRAND_HASHTAGS}\n  — All content created and posted between ${POSTING_WINDOW}`,total:"700.00",upfront:"350.00",final:"350.00"}},
+  {id:"probablyattarget",tier:"rec",handle:"@probablyat_target",platform:"IG",followers:"70K followers",email:"[Contact via Instagram DM]",askPrice:"$1,400",suggestedPrice:"$1,200",priceLabel:"shop-with-me + 3 Stories",score:4,rationale:'Target-dedicated account. Shop-with-me format is #1 for driving foot traffic. Expressed genuine enthusiasm. Negotiate to $1,200.',contract:{platforms:"Instagram",script:"Script A — 'Target Run: Party Edition'",deliverables:`— 1× Instagram Reel: "Shop-With-Me" format (minimum 45 seconds, filmed in-store at Target)\n  — 3× Instagram Story Frames with product tags, location tag, and shopping links\n  — Content must show the in-store shopping experience discovering House of Party products\n  — Tag ${BRAND_HANDLE} and @target in all posts\n  — Use campaign hashtags: ${BRAND_HASHTAGS}\n  — All content created and posted between ${POSTING_WINDOW}`,total:"1,200.00",upfront:"600.00",final:"600.00"}},
+  {id:"merryvibesonly",tier:"rec",handle:"@merryvibesonly",platform:"TT + IG",followers:"TikTok 13K · IG 30K",email:"merryvibesonlyllc@gmail.com",askPrice:"$500",suggestedPrice:"$500",priceLabel:"1 party setup video — take as quoted",score:4,rationale:'Agreed to decorate her house using your kit — exact "party transformation" format. $500 for authentic setup content.',contract:{platforms:"TikTok and/or Instagram",script:"Script B — 'Party Setup Transformation'",deliverables:`— 1× Video (TikTok or Instagram Reel, minimum 45 seconds): Party setup/decoration transformation using House of Party products\n  — Content must show full unboxing of products with visible branding\n  — Must include before/after transformation of decorated space\n  — Mention availability at Target stores nationwide\n  — Tag ${BRAND_HANDLE} in all posts\n  — Use campaign hashtags: ${BRAND_HASHTAGS}\n  — All content created and posted between ${POSTING_WINDOW}`,total:"500.00",upfront:"250.00",final:"250.00"}},
+  {id:"ariellonga",tier:"rec",handle:"@ariel_longa3",platform:"TT",followers:"15K followers",email:"longaariel8@gmail.com",askPrice:"$750",suggestedPrice:"$650",priceLabel:"2 videos: in-store + home setup",score:4,rationale:'Two videos under $750 covering both formats: in-store Target discovery AND at-home party setup.',contract:{platforms:"TikTok",script:"Script A (in-store) + Script B (home setup)",deliverables:`— 1× TikTok Video: In-store Target shopping video (minimum 30 seconds)\n    • Must show House of Party products on Target shelves\n    • Show discovery moment and product selection\n  — 1× TikTok Video: At-home party setup/decoration video (minimum 45 seconds)\n    • Must show unboxing and styling of House of Party products\n    • Include before/after transformation\n  — Both videos must mention availability at Target\n  — Tag ${BRAND_HANDLE} in all posts\n  — Use campaign hashtags: ${BRAND_HASHTAGS}\n  — All content created and posted between ${POSTING_WINDOW}`,total:"650.00",upfront:"325.00",final:"325.00"}},
+  {id:"chelseehood",tier:"rec",handle:"@chelseehood",platform:"IG",followers:"138K followers",email:"chelsee@thehouseofhoodblog.com",askPrice:"$3,000",suggestedPrice:"$2,500",priceLabel:"in-store + party setup bundle",score:4,rationale:'138K strong mid-tier. Two-video package covers in-store and party setup. Home/lifestyle audience is the buyer demographic.',contract:{platforms:"Instagram",script:"Script A (in-store) + Script B (party setup)",deliverables:`— 1× Instagram Reel: In-store Target video (minimum 30 seconds)\n    • Must show House of Party products in the Target party aisle\n    • Show genuine discovery and product selection\n  — 1× Instagram Reel: Party setup/styling video (minimum 45 seconds)\n    • Must show full party decoration using House of Party products\n    • Include before/after transformation\n  — 3× Instagram Story Frames per video (6 total) with product tags\n  — Tag ${BRAND_HANDLE} and @target in all posts\n  — Use campaign hashtags: ${BRAND_HASHTAGS}\n  — All content created and posted between ${POSTING_WINDOW}`,total:"2,500.00",upfront:"1,250.00",final:"1,250.00"}},
+  {id:"christamarie",tier:"rec",handle:"@stylewithmechristamarie",platform:"IG + FB",followers:"43K IG + 26K FB",email:"[Contact via Instagram DM]",askPrice:"$150",suggestedPrice:"$150",priceLabel:"Reel + Stories + LTK + FB — lock now",score:4,rationale:'$150 for Reel + Stories + LTK + 26K Facebook repost is absurdly cheap. Lock immediately.',contract:{platforms:"Instagram and Facebook",script:"Script C — 'The Effortless Party Host'",deliverables:`— 1× Instagram Reel (minimum 15 seconds) featuring House of Party products\n  — 3× Instagram Story Frames with LTK or Storefront links\n  — Product photos for each featured item\n  — 1× Facebook repost of Instagram Reel to Facebook page (26K followers)\n  — Content must mention availability at Target stores\n  — Tag ${BRAND_HANDLE} in all posts\n  — Use campaign hashtags: ${BRAND_HASHTAGS}\n  — All content created and posted between ${POSTING_WINDOW}`,total:"150.00",upfront:"75.00",final:"75.00"}},
+  {id:"boujeefinds",tier:"maybe",handle:"@boujeefindsofficial",platform:"IG",followers:"108K followers",email:"boujeefindsofficial@gmail.com",askPrice:"$2,000",suggestedPrice:"$1,500",priceLabel:"only if negotiated down",score:3,rationale:'Shopping-oriented audience is good. $2K for one video at 108K is above benchmark. Only at $1,500 or 2-for-$2K.',contract:{platforms:"Instagram",script:"Script A or Script C — creator's choice",deliverables:`— 1× Instagram Reel or TikTok Video (minimum 30 seconds) featuring House of Party products\n  — Content must position products as a "boujee find" at Target\n  — Show products in-store or styled at home with visible branding\n  — Tag ${BRAND_HANDLE} and @target in all posts\n  — Use campaign hashtags: ${BRAND_HASHTAGS}\n  — All content created and posted between ${POSTING_WINDOW}`,total:"1,500.00",upfront:"750.00",final:"750.00"}},
+  {id:"lyndasedoud",tier:"maybe",handle:"@lyndasedoud",platform:"TT",followers:"33K followers",email:"lyndased.collabs@gmail.com",askPrice:"Flexible",suggestedPrice:"$400",priceLabel:"offer $400 for unboxing + decor",score:3,rationale:'Agreed to unboxing and decoration video. Asking about budget means flexible. Offer $400.',contract:{platforms:"TikTok",script:"Script B — 'Party Setup Transformation'",deliverables:`— 1× TikTok Video: Unboxing of House of Party products (minimum 30 seconds)\n  — 1× TikTok Video: Decoration/party setup video (minimum 45 seconds)\n  — Both videos must mention availability at Target\n  — Tag ${BRAND_HANDLE} in all posts\n  — Use campaign hashtags: ${BRAND_HASHTAGS}\n  — All content created and posted between ${POSTING_WINDOW}`,total:"400.00",upfront:"200.00",final:"200.00"}},
+  {id:"katiedanek",tier:"maybe",handle:"@katiedanek",platform:"TT",followers:"51K followers",email:"danekkatie@gmail.com",askPrice:"$500+",suggestedPrice:"$500",priceLabel:"only if timeline works",score:3,rationale:'Used to make balloon videos with your products. Content shifted to mom niche. Only proceed if she can hit timeline.',contract:{platforms:"TikTok",script:"Script B or balloon-specific content",deliverables:`— 1× TikTok Video (minimum 30 seconds) featuring House of Party products\n  — Content must focus on party supplies/balloons\n  — Must show products with visible branding\n  — Mention availability at Target stores\n  — Tag ${BRAND_HANDLE} in all posts\n  — Use campaign hashtags: ${BRAND_HASHTAGS}\n  — All content created and posted between ${POSTING_WINDOW}`,total:"500.00",upfront:"250.00",final:"250.00"}},
+  {id:"targettakesmypaycheck",tier:"maybe",handle:"@targettakesmypaycheck",platform:"IG",followers:"68K followers",email:"targettakesmypaycheck@gmail.com",askPrice:"No rate",suggestedPrice:"$800",priceLabel:"offer $800 — post-Feb only",score:3,rationale:'Target-dedicated, 68K. Not available Feb. Lock in if launch extends past February.',contract:{platforms:"Instagram",script:"Script A — 'Target Run: Party Edition'",deliverables:`— 1× Instagram Reel (minimum 30 seconds) featuring House of Party products at Target\n  — 3× Instagram Story Frames with product tags and shopping links\n  — Content must show products on Target shelves or in-cart\n  — Tag ${BRAND_HANDLE} and @target in all posts\n  — Use campaign hashtags: ${BRAND_HASHTAGS}\n\n  NOTE: Creator available starting March 2026. Posting window adjusted accordingly.`,total:"800.00",upfront:"400.00",final:"400.00"}},
+  {id:"s1",tier:"skip",handle:"@laurenmeadows_",platform:"TT",followers:"243K",email:"hello@lauren-meadows.com",askPrice:"$6K IG / $7K TikTok",score:1,rationale:'$7K for one TikTok at 243K is 3-5× benchmark.'},
+  {id:"s2",tier:"skip",handle:"@ximenamsalinas",platform:"TT",followers:"20K",email:"esmeralda@solylunamgmt.com",askPrice:"$2,500",score:1,rationale:'$2,500 for 20K is 5-10× market rate.'},
+  {id:"s3",tier:"skip",handle:"@sheshortsweet",platform:"TT",followers:"328K",email:"juliapaige@linkcreatormgmt.com",askPrice:"$8,500–$12K",score:1,rationale:'Celebrity pricing. That budget buys the entire recommended roster.'},
+  {id:"s4",tier:"skip",handle:"@jordynsleek",platform:"TT",followers:"260K",email:"madison.roy@thedigitaldept.com",askPrice:"$5K TT / $4K IG",score:2,rationale:"Can't deliver until after February. Above benchmark."},
+  {id:"s5",tier:"skip",handle:"@melissathompsonhome",platform:"IG",followers:"108K",email:"melissathompson@famfluence.com",askPrice:"$4K UGC / $7K Reels",score:1,rationale:'$11K total for 108K. Way above benchmark.'},
+  {id:"s6",tier:"skip",handle:"@convinoboard",platform:"TT",followers:"212K",email:"No email",score:1,rationale:'No email, no pricing, charcuterie niche.'},
+  {id:"s7",tier:"skip",handle:"@targetscallingme",platform:"IG",followers:"32K",email:"targetscallingme@gmail.com",score:2,rationale:'32K, no pricing. Revisit as cheap add-on later.'},
+  {id:"s8",tier:"skip",handle:"@homewithfey",platform:"TT",followers:"10K",email:"homewithfey@gmail.com",score:1,rationale:'10K nano-tier. Too small for nationwide launch.'}
+];
+
+let currentContractId = null;
 
 function renderCards(){
   const c=document.getElementById('card-container');
@@ -173,7 +208,10 @@ function renderCards(){
     const badgeText=i.tier==='rec'?'★ Recommend':i.tier==='maybe'?'Maybe':'Skip';
     const scoreHTML=Array.from({length:5},(_,j)=>`<div class="score-segment ${j<i.score?'filled':'empty'}"></div>`).join('');
     const priceHTML=i.suggestedPrice?`<div class="card-price"><span class="ask">${i.askPrice}</span><span class="suggested">${i.suggestedPrice}</span><span class="label">${i.priceLabel||''}</span></div>`:`<div class="card-price"><span class="ask">${i.askPrice}</span></div>`;
-    const actionsHTML=i.contract?`<div class="card-actions"><button class="card-btn contract" onclick="openContract('${i.id}')">📄 View Contract</button></div>`:'';
+    let actionsHTML='';
+    if(i.contract){
+      actionsHTML=`<div class="card-actions"><button class="card-btn contract" onclick="openContract('${i.id}')">📄 Contract</button><button class="card-btn docusign" onclick="openContract('${i.id}',true)">✉️ DocuSign</button></div>`;
+    }
     return `<div class="card ${tierClass}"><span class="card-badge ${badgeClass}">${badgeText}</span><div class="card-handle">${i.handle} <span class="platform">${i.platform}</span></div><div class="card-meta"><span class="followers">${i.followers}</span><span>${i.email}</span></div>${priceHTML}<div class="score-bar">${scoreHTML}</div><div class="card-rationale"><strong>${i.tier==='skip'?'Skip':'Why'}:</strong> ${i.rationale}</div>${actionsHTML}</div>`;
   }).join('');
 }
@@ -182,14 +220,17 @@ function genContract(id){
   const i=influencers.find(x=>x.id===id);
   if(!i||!i.contract)return'';
   const c=i.contract;
-  return `<span class="ct">1. PARTIES</span>
+  const productList=PRODUCTS.map(p=>`  — ${p}`).join('\n');
+  return `<span class="ct">INFLUENCER CONTENT AGREEMENT</span>
+
+<span class="ct">1. PARTIES</span>
 This Influencer Content Agreement ("Agreement") is entered into as of __________________ by and between:
 
 <strong>Company:</strong> Paper Party LLC ("Brand")
   Brand Name: House of Party
-  Campaign: Nationwide Target Retail Launch
+  Campaign: Nationwide Target Valentine's Day Retail Launch
 
-<strong>Creator:</strong> <span class="fill">${c.legalName}</span>
+<strong>Creator:</strong> <span class="fill">[INFLUENCER LEGAL NAME]</span>
   Social Media Handle(s): <span class="val">${i.handle}</span>
   Contact Email: <span class="val">${i.email}</span>
 
@@ -200,100 +241,169 @@ Recommended Content Brief: <span class="val">${c.script}</span>
 Creator agrees to produce and publish:
   ${c.deliverables}
 
-Content must remain live for a minimum of 12 months from posting date.
-Creator must respond to comments on posted content for a minimum of 48 hours.
+Content must remain live for a minimum of <strong>twelve (12) months</strong> from the posting date.
+Creator must respond to comments on posted content for a minimum of <strong>forty-eight (48) hours</strong> following posting.
 
 <span class="ct">3. COMPENSATION</span>
 Total Fee: <span class="val">$${c.total} USD</span>
 
 Payment Schedule:
   — 50% (<span class="val">$${c.upfront}</span>) upon execution of this Agreement
-  — 50% (<span class="val">$${c.final}</span>) within 5 business days of final content posting
+  — 50% (<span class="val">$${c.final}</span>) within five (5) business days of final content posting
 
-Payment Method: <span class="fill">[Wire / ACH / PayPal / Check]</span>
+Payment Method: ____________________________
 
-Creator is responsible for all applicable taxes. Brand will issue a 1099-NEC for payments exceeding $600 in a calendar year.
+Creator is responsible for all applicable taxes. Brand will issue a <strong>1099-NEC</strong> for payments exceeding $600 in a calendar year.
 
 <span class="ct">4. CONTENT TIMELINE & APPROVAL</span>
-a. Brand will ship product to Creator by <span class="fill">[DATE]</span>
-b. Creator will submit draft content for review by <span class="fill">[DATE]</span>
-c. Brand will provide feedback within 48 business hours of draft receipt
-d. Creator is entitled to a maximum of two (2) revision rounds
-e. Final content must be approved by Brand before posting
-f. All content must be posted between <span class="fill">[POST START DATE]</span> and <span class="fill">[POST END DATE]</span>
+a. Creator will purchase the agreed-upon products <strong>in-store</strong>, purchasing <strong>one (1) unit of each product</strong> as outlined by the Brand. Creator must retain original purchase receipts.
+
+${productList}
+
+b. Brand will reimburse Creator for the <strong>full product cost</strong> in addition to the agreed-upon creator fee upon receipt submission.
+
+c. Creator will select the applicable content script option(s) from the Brand-provided concepts outlined in <strong>Addendum A</strong>, unless otherwise specified in the Deliverables section above, and will create content that reasonably aligns with the selected script(s)' format, tone, and intent.
+
+d. Due to the accelerated timeline, <strong>no draft submission or prior approval is required</strong>, provided the content follows the selected script framework(s) and includes all required disclosures and tags.
+
+e. Creator is encouraged to apply their authentic style and creative approach while ensuring accurate representation, clear product visibility, and brand-safe presentation.
+
+f. All contracted content must be <strong>created and posted between ${POSTING_WINDOW}</strong>.
 
 <span class="ct">5. CONTENT LICENSE & USAGE RIGHTS</span>
-Creator grants Brand a non-exclusive, worldwide, royalty-free license to:
-  a. Repost content on Brand's owned social media channels (Instagram, TikTok, Facebook, YouTube, Pinterest)
-  b. Feature content on Brand's website, email newsletters, and retail presentations
-  c. Use content for paid social media amplification (Spark Ads on TikTok, paid boosting on Instagram/Facebook) for 90 days from posting date
+Creator grants Brand a <strong>non-exclusive, worldwide, royalty-free license</strong> to:
+  a. Repost content on Brand-owned social media channels
+  b. Feature content on Brand websites, email communications, and retail presentations
+  c. Use content for paid social media amplification for <strong>ninety (90) days</strong> from the posting date
 
-License Duration: 12 months from the date of posting.
+License duration is <strong>twelve (12) months</strong> from posting date.
 Creator retains ownership of the original content.
 
 <span class="ct">6. EXCLUSIVITY</span>
-During the Campaign Period and for thirty (30) days following the final content post, Creator agrees not to create, publish, or promote sponsored content for competing categories: party supplies, party decorations, balloons, banners, and tableware.
+During the campaign period and for thirty (30) days following the final content post, Creator agrees not to create, publish, or promote sponsored content for competing party supply categories, including party decorations, balloons, banners, and tableware.
 
-This exclusivity does not prevent Creator from posting organic (non-sponsored) content featuring competing products.
+Organic, non-sponsored content is permitted.
 
 <span class="ct">7. FTC COMPLIANCE & DISCLOSURE</span>
-Creator agrees to comply with all FTC guidelines:
-  a. Include #ad or #sponsored at the beginning of all captions
-  b. Use platform-native paid partnership labels where available
-  c. Include verbal disclosure in video content
-  d. Include disclosure on every Instagram Story frame
+Creator agrees to comply with all applicable FTC guidelines, including:
+  a. Clear disclosure using <strong>#ad</strong> or <strong>#sponsored</strong>
+  b. Use of platform-native paid partnership tools where available
+  c. Verbal disclosure within video content
+  d. Disclosure on all story content
 
-Failure to comply may result in content removal request and/or withholding of final payment.
+Failure to comply may result in content removal requests and/or withholding of final payment.
 
 <span class="ct">8. REPRESENTATIONS & WARRANTIES</span>
 Creator represents and warrants that:
-  a. Creator has the authority to enter into this Agreement
-  b. Content will be original work, not infringing any third-party IP rights
-  c. Creator will not use AI-generated imagery or likeness in deliverables
-  d. All product statements will be truthful and based on genuine experience
-  e. Creator is at least 18 years of age
+  a. Creator has authority to enter into this Agreement
+  b. Content will be original and non-infringing
+  c. No AI-generated imagery or likeness will be used
+  d. All statements will be truthful and based on genuine experience
+  e. Creator is at least eighteen (18) years of age
 
 <span class="ct">9. TERMINATION</span>
-Either party may terminate with 7 days' written notice for material breach.
-  — If Brand terminates without cause after product shipment, Creator retains 50% upfront payment
-  — If Creator fails to deliver, Creator must refund all payments within 14 days
+Either party may terminate this Agreement with seven (7) days' written notice for material breach.
+  — If Brand terminates without cause after product purchase, Creator retains the upfront payment
+  — If Creator fails to deliver, Creator must refund all payments within fourteen (14) days
 
 <span class="ct">10. CONFIDENTIALITY</span>
-Creator agrees to keep confidential the financial terms and any proprietary marketing strategy shared during the campaign.
+Creator agrees to keep confidential all financial terms and proprietary marketing strategies disclosed during the campaign.
 
 <span class="ct">11. GOVERNING LAW</span>
-This Agreement shall be governed by the laws of the State of <span class="fill">[STATE]</span>.
+This Agreement shall be governed by the laws of the State of __________________.
 
 <span class="ct">12. SIGNATURES</span>
 
 PAPER PARTY LLC
 By: ________________________________    Date: ____________
-Name: <span class="fill">[AUTHORIZED SIGNER]</span>
-Title: <span class="fill">[TITLE]</span>
+Name: ________________________________
+Title: ________________________________
 
 
 CREATOR — <span class="val">${i.handle}</span>
 By: ________________________________    Date: ____________
-Name: <span class="fill">${c.legalName}</span>`;
+Name: <span class="fill">[INFLUENCER LEGAL NAME]</span>
+
+
+<span class="ct">ADDENDUM A — CONTENT SCRIPT OPTIONS & CREATIVE GUIDELINES</span>
+This Addendum is incorporated into and governed by the Influencer Content Agreement.
+
+<strong>SCRIPT A — "Target Run: Party Edition"</strong>
+Concept: A high-energy, in-store discovery narrative highlighting House of Party products in the Target party aisle, focusing on assortment, pricing visibility, and nationwide availability.
+Key Beats:
+  — Entry into the Target party aisle with a strong opening moment
+  — Discovery of House of Party products on shelf with genuine reaction
+  — Selection of multiple items to demonstrate range
+  — Clear callout of nationwide Target availability
+
+<strong>SCRIPT B — "Party Setup Transformation"</strong>
+Concept: A before-and-after setup showing how a space is transformed into a party-ready environment using House of Party products.
+Key Beats:
+  — Empty or undecorated space
+  — Products laid out together
+  — Setup process shown progressively
+  — Final decorated result with availability callout
+
+<strong>SCRIPT C — "The Effortless Party Host"</strong>
+Concept: A lifestyle-driven narrative centered on simplifying party planning while achieving a polished, coordinated look.
+Key Beats:
+  — Relatable planning challenge
+  — Moment of overwhelm or time constraint
+  — Introduction of House of Party as the solution
+  — Styled product showcase with availability callout`;
 }
 
-function openContract(id){
+function openContract(id, triggerDocuSign=false){
+  currentContractId=id;
   const i=influencers.find(x=>x.id===id);
   document.getElementById('modal-title').textContent='Contract — '+i.handle;
   document.getElementById('modal-body').innerHTML=genContract(id);
   document.getElementById('modal-overlay').classList.add('active');
   document.body.style.overflow='hidden';
+  if(triggerDocuSign) setTimeout(()=>sendDocuSign(),500);
 }
+
 function closeContract(){
   document.getElementById('modal-overlay').classList.remove('active');
   document.body.style.overflow='';
+  currentContractId=null;
 }
+
 document.getElementById('modal-overlay').addEventListener('click',function(e){if(e.target===this)closeContract()});
 document.addEventListener('keydown',function(e){if(e.key==='Escape')closeContract()});
 
 function copyContract(btn){
   const t=document.getElementById('modal-body').innerText;
-  navigator.clipboard.writeText(t).then(()=>{btn.classList.add('copied');btn.innerHTML='✓ Copied';setTimeout(()=>{btn.classList.remove('copied');btn.innerHTML='📋 Copy Contract Text'},2500)});
+  navigator.clipboard.writeText(t).then(()=>{btn.classList.add('copied');btn.innerHTML='✓ Copied';setTimeout(()=>{btn.classList.remove('copied');btn.innerHTML='📋 Copy Text'},2500)});
+}
+
+function sendDocuSign(){
+  if(!currentContractId)return;
+  const i=influencers.find(x=>x.id===currentContractId);
+  if(!i)return;
+  const contractText=document.getElementById('modal-body').innerText;
+  const subject=encodeURIComponent(`House of Party x ${i.handle} — Influencer Content Agreement`);
+  const body=encodeURIComponent(`Hi!\n\nPlease find attached the Influencer Content Agreement for the House of Party Valentine's Day Target Launch campaign.\n\nKey details:\n• Fee: $${i.contract.total}\n• Platform: ${i.contract.platforms}\n• Posting window: ${POSTING_WINDOW}\n• Products to purchase in-store (reimbursed): 4 Valentine's Day kits\n\nPlease review and sign at your earliest convenience.\n\nBest,\nPaper Party LLC / House of Party`);
+  const emailAddr=i.email.includes('@')&&!i.email.includes('[')?i.email:'';
+  // Try DocuSign deep link first — if they have DocuSign, it opens the app
+  // Fallback: compose email with contract text for manual DocuSign upload
+  const dsUrl=`https://app.docusign.com/templates/create?emailSubject=${subject}`;
+  const mailUrl=`mailto:${emailAddr}?subject=${subject}&body=${body}`;
+  // Copy contract to clipboard for pasting into DocuSign
+  navigator.clipboard.writeText(contractText).then(()=>{
+    const toast=document.getElementById('ds-toast');
+    const msg=document.getElementById('ds-toast-msg');
+    if(emailAddr){
+      msg.innerHTML=`<strong>Contract copied to clipboard!</strong><br>Opening DocuSign + email for <strong>${i.handle}</strong> (${emailAddr}).<br><br>1. DocuSign tab: paste contract → add signer email → send<br>2. Email tab: pre-filled notification to creator`;
+      window.open(dsUrl,'_blank');
+      setTimeout(()=>window.open(mailUrl,'_blank'),800);
+    } else {
+      msg.innerHTML=`<strong>Contract copied to clipboard!</strong><br><strong>${i.handle}</strong> has no email on file — contact via Instagram DM first to get their email, then:<br><br>1. Open <a href="${dsUrl}" target="_blank" style="color:var(--purple)">DocuSign</a><br>2. Paste contract → add signer email → send`;
+      window.open(dsUrl,'_blank');
+    }
+    toast.classList.add('show');
+    setTimeout(()=>toast.classList.remove('show'),15000);
+  });
 }
 
 document.querySelectorAll('.tab').forEach(t=>t.addEventListener('click',function(){
